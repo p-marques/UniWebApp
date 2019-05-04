@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace UniWebApp.Core
 {
     public class AppEntityDataFieldCombobox : AppEntityDataField
     {
-        public IList<AppEntityDataFieldComboboxOption> Options { get; set; }
-        public AppEntityDataFieldComboboxOption Selected { get; set; }
+        [Required]
+        public AppEntityDataFieldComboboxOption SelectedOption { get; set; }
+
+        public ICollection<AppEntityDataFieldComboboxOption> Options { get; set; }
     }
 }

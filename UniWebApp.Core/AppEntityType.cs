@@ -8,6 +8,6 @@ namespace UniWebApp.Core
         public string Name { get; set; }
 
         // Navigation
-        public IList<AppEntity> Entities { get; set; }
+        public ICollection<AppEntity> Entities { get; set; }
     }
 }
