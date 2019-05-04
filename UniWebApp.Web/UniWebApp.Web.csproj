@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UserSecretsId>aspnet-UniWebApp.Web-042F6FA9-17BA-4010-B9E3-6DE83F804E77</UserSecretsId>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <TypeScriptToolsVersion>3.3</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniWebApp.Data\UniWebApp.Data.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>
