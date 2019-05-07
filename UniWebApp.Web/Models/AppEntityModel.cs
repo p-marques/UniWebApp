@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace UniWebApp.Web.Models
 {
-    public class NewAppEntityTypeModel
+    public class AppEntityModel
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public int TypeId { get; set; }
     }
 }

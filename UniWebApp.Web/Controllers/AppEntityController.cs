@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UniWebApp.Core;
 using UniWebApp.Data;
@@ -23,17 +21,17 @@ namespace UniWebApp.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<List<AppEntity>>>> GetAppEntities()
+        public async Task<ActionResult<ApiResponse>> GetAppEntities()
         {
             try
             {
                 var results = await _repo.GetAllEntitiesAsync();
 
-                return new ApiResponse<List<AppEntity>>(StatusCodes.Status200OK, "OK", results);
+                return Ok(new ApiResponse<List<AppEntity>>(StatusCodes.Status200OK, "OK", results));
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database error.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
             }
         }
     }

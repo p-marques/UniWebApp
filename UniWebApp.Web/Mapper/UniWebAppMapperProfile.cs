@@ -8,8 +8,7 @@ namespace UniWebApp.Web.Mapper
     {
         public UniWebAppMapperProfile()
         {
-            this.CreateMap<AppEntityType, AppEntityTypeModel>();
-            this.CreateMap<AppEntityType, NewAppEntityTypeModel>().ReverseMap();
+            this.CreateMap<AppEntityType, AppEntityTypeModel>().ReverseMap();
         }
     }
 }

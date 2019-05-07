@@ -22,11 +22,51 @@ namespace UniWebApp.Data
         {
             return await _db.AppEntities.ToListAsync();
         }
+        public async Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields)
+        {
+            var result = await _db.AppEntities.FindAsync(id);
+
+            if (includeFields)
+            {
+                result.Fields = await GetDataFieldsByEntityAsync(id, false);
+            }
+
+            return result;
+        }
+
+        // Data Field
+        public async Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId, bool majorFieldsOnly)
+        {
+            var result = _db.AppEntityFields.Include(x => x.Entity).Where(c => c.Entity.Id == entityId);
+
+            if (majorFieldsOnly)
+            {
+                result = result.Where(v => v.Major == true);
+            }
+
+            return await result.ToListAsync();
+        }
 
         // AppEntityType
+        public async Task<List<AppEntityType>> GetAllEntityTypesAsync()
+        {
+            return await _db.AppEntityTypes.ToListAsync();
+        }
+        public async Task<AppEntityType> GetEntityTypeByIdAsync(int id)
+        {
+            return await _db.AppEntityTypes.FindAsync(id);
+        }
+        public async Task<AppEntityType> GetEntityTypeByNameAsync(string name)
+        {
+            return await _db.AppEntityTypes.FirstOrDefaultAsync(x => x.Name == name);
+        }
         public void AddEntityType(AppEntityType newType)
         {
             _db.AppEntityTypes.Add(newType);
+        }
+        public void RemoveEntityType(AppEntityType typeToRemove)
+        {
+            _db.AppEntityTypes.Remove(typeToRemove);
         }
 
         // Save
