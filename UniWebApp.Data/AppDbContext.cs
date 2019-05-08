@@ -21,6 +21,8 @@ namespace UniWebApp.Data
         public DbSet<AppEntityDataFieldText> AppEntityDataFieldsText { get; set; }
         public DbSet<AppEntityDataFieldCombobox> AppEntityDataFieldsCombobox { get; set; }
         public DbSet<AppEntityDataFieldComboboxOption> AppEntityDataFieldComboboxOptions { get; set; }
+        public DbSet<DataFieldTemplate> DataFieldsTemplate { get; set; }
+        public DbSet<DataFieldTemplateComboboxOption> DataFieldsTemplateComboboxOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

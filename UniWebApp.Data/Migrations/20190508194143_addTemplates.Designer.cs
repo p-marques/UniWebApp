@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniWebApp.Data;
 
 namespace UniWebApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508194143_addTemplates")]
+    partial class addTemplates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,14 +286,14 @@ namespace UniWebApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DataFieldTemplateId");
+                    b.Property<int?>("ComboboxId");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DataFieldTemplateId");
+                    b.HasIndex("ComboboxId");
 
                     b.ToTable("DataFieldsTemplateComboboxOptions");
                 });
@@ -424,10 +426,9 @@ namespace UniWebApp.Data.Migrations
 
             modelBuilder.Entity("UniWebApp.Core.DataFieldTemplateComboboxOption", b =>
                 {
-                    b.HasOne("UniWebApp.Core.DataFieldTemplate", "DataFieldTemplate")
+                    b.HasOne("UniWebApp.Core.DataFieldTemplate", "Combobox")
                         .WithMany("ComboboxOptions")
-                        .HasForeignKey("DataFieldTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ComboboxId");
                 });
 
             modelBuilder.Entity("UniWebApp.Core.AppEntityDataFieldCombobox", b =>

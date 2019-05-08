@@ -16,19 +16,24 @@ namespace UniWebApp.Data
         //void AddEntity(AppEntity newEntity);
         //void DeleteEntity(AppEntity entityToRemove);
 
-        //// AppEntityDataField
+        // AppEntityDataField
         Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId, bool majorFieldsOnly);
         //void AddDataFieldToEntity(int EntityId, AppEntityDataField newField, bool addToAllEntitiesFromType);
         //void DeleteDataField(AppEntityDataField fieldToRemove);
 
-        //// AppEntityType
+        // AppEntityType
         Task<List<AppEntityType>> GetAllEntityTypesAsync();
         Task<AppEntityType> GetEntityTypeByIdAsync(int id);
         Task<AppEntityType> GetEntityTypeByNameAsync(string name);
         void AddEntityType(AppEntityType newType);
         void RemoveEntityType(AppEntityType typeToRemove);
 
-        //// Save
+        // DataFieldTemplate
+        Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int entityTypeId);
+        Task<DataFieldTemplate> GetDataFieldTemplateByNameAsync(int entityTypeId, string name);
+        void AddDataFieldTemplate(DataFieldTemplate newFieldTemplate);
+
+        // Save
         Task<bool> SaveChangesAsync();
     }
 }

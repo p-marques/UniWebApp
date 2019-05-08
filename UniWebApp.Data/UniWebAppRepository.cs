@@ -69,6 +69,20 @@ namespace UniWebApp.Data
             _db.AppEntityTypes.Remove(typeToRemove);
         }
 
+        // DataFieldTemplate
+        public async Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int entityTypeId)
+        {
+            return await _db.DataFieldsTemplate.FindAsync(entityTypeId);
+        }
+        public async Task<DataFieldTemplate> GetDataFieldTemplateByNameAsync(int entityTypeId, string name)
+        {
+            return await _db.DataFieldsTemplate.Include(x => x.EntityType).Where(x => x.EntityType.Id == entityTypeId).SingleOrDefaultAsync(q => q.Name == name);
+        }
+        public void AddDataFieldTemplate(DataFieldTemplate newFieldTemplate)
+        {
+            _db.DataFieldsTemplate.Add(newFieldTemplate);
+        }
+
         // Save
         public async Task<bool> SaveChangesAsync()
         {
