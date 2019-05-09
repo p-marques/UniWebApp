@@ -9,6 +9,7 @@ namespace UniWebApp.Core
 
         // Navigation
         public ICollection<AppEntity> Entities { get; set; }
+
         public ICollection<DataFieldTemplate> TemplateFields { get; set; }
     }
 }

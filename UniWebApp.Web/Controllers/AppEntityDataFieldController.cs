@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniWebApp.Core;
 using UniWebApp.Data;
 using UniWebApp.Web.Models;
 
@@ -32,7 +30,7 @@ namespace UniWebApp.Web.Controllers
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Essa entidade não existe."));
                 }
 
-                if(entity.Fields.Where(x => x.Name == model.Name).Count() > 0)
+                if (entity.Fields.Where(x => x.Name == model.Name).Count() > 0)
                 {
                     return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro. Um campo com esse nome já existe nesta entidade."));
                 }
@@ -40,7 +38,6 @@ namespace UniWebApp.Web.Controllers
                 // WIP
 
                 return Ok();
-
             }
             catch (Exception)
             {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniWebApp.Core;
 
 namespace UniWebApp.Web.Models
@@ -29,12 +25,13 @@ namespace UniWebApp.Web.Models
         [Required]
         [StringLength(120, MinimumLength = 3)]
         public string Name { get; set; }
+
         [Required]
         public DataFieldTypeEnum FieldType { get; set; }
+
         [Required]
         public bool MustHave { get; set; }
-        [Required]
-        public int EntityTypeId { get; set; }
+
         public string[] ComboboxOptions { get; set; }
     }
 }

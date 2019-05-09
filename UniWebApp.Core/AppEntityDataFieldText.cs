@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace UniWebApp.Core
+﻿namespace UniWebApp.Core
 {
     public class AppEntityDataFieldText : AppEntityDataField
     {

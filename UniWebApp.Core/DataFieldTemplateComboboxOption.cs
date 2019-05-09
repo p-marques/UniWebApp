@@ -8,6 +8,7 @@ namespace UniWebApp.Core
 
         [Required]
         public string Name { get; set; }
+
         [Required]
         public DataFieldTemplate DataFieldTemplate { get; set; }
     }

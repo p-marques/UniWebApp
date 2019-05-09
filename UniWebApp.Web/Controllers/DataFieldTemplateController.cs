@@ -11,7 +11,7 @@ using UniWebApp.Web.Models;
 
 namespace UniWebApp.Web.Controllers
 {
-    [Route("api/entities/types/templates/fields")]
+    [Route("api/entities/types/{entityTypeId:int}/fields")]
     [ApiController]
     public class DataFieldTemplateController : ControllerBase
     {
@@ -25,11 +25,11 @@ namespace UniWebApp.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> AddTemplateField(NewDataFieldTemplateModel model)
+        public async Task<ActionResult<ApiResponse>> AddTemplateField(int entityTypeId, NewDataFieldTemplateModel model)
         {
             try
             {
-                if (model.FieldType < 0)
+                if (entityTypeId <= 0 || model.FieldType < 0)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Modelo incorreto. Verifique os dados inseridos."));
                 }
@@ -39,14 +39,18 @@ namespace UniWebApp.Web.Controllers
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Campo de escolha múltipa requer opções. Verifique os dados inseridos."));
                 }
 
-                DataFieldTemplate foundFieldTemplate = await _repo.GetDataFieldTemplateByNameAsync(model.EntityTypeId, model.Name);
+                DataFieldTemplate foundFieldTemplate = await _repo.GetDataFieldTemplateByNameAsync(entityTypeId, model.Name);
                 if (foundFieldTemplate != null)
                 {
                     return Conflict(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Um campo com esse nome já existe."));
                 }
 
                 var newFieldTemplate = _mapper.Map<DataFieldTemplate>(model);
-                newFieldTemplate.EntityType = await _repo.GetEntityTypeByIdAsync(model.EntityTypeId);
+                newFieldTemplate.EntityType = await _repo.GetEntityTypeByIdAsync(entityTypeId);
+                if (newFieldTemplate.EntityType == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Tipo de entidade não encontrado."));
+                }
 
                 if (model.FieldType == DataFieldTypeEnum.Combobox)
                 {
@@ -64,7 +68,7 @@ namespace UniWebApp.Web.Controllers
                     return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro. Algo correu mal ao adicionar o novo campo.");
                 }
 
-                return Created("", new ApiResponse<DataFieldTemplateModel>(StatusCodes.Status201Created, "Sucesso! Novo campo adicionado.", _mapper.Map<DataFieldTemplateModel>(newFieldTemplate)));
+                return Created("", new ApiResponse(StatusCodes.Status201Created, "Sucesso! Novo campo adicionado."));
             }
             catch (Exception)
             {
@@ -72,12 +76,12 @@ namespace UniWebApp.Web.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<ApiResponse>> UpdateTemplateField(int id, [FromBody]NewDataFieldTemplateModel model)
+        [HttpPut("{templateFieldId:int}")]
+        public async Task<ActionResult<ApiResponse>> UpdateTemplateField(int entityTypeId, int templateFieldId, NewDataFieldTemplateModel model)
         {
             try
             {
-                if (model.FieldType < 0)
+                if (entityTypeId <= 0 || model.FieldType < 0)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Modelo incorreto. Verifique os dados inseridos."));
                 }
@@ -87,13 +91,13 @@ namespace UniWebApp.Web.Controllers
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Campo de escolha múltipa requer opções. Verifique os dados inseridos."));
                 }
 
-                DataFieldTemplate foundFieldTemplate = await _repo.GetDataFieldTemplateByNameAsync(model.EntityTypeId, model.Name);
+                DataFieldTemplate foundFieldTemplate = await _repo.GetDataFieldTemplateByNameAsync(entityTypeId, model.Name);
                 if (foundFieldTemplate != null)
                 {
                     return Conflict(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Um campo com esse nome já existe."));
                 }
 
-                var field = await _repo.GetDataFieldTemplateByIdAsync(id);
+                var field = await _repo.GetDataFieldTemplateByIdAsync(templateFieldId);
                 if (field == null)
                 {
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Campo não encontrado."));
@@ -150,12 +154,17 @@ namespace UniWebApp.Web.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<ApiResponse>> DeleteTemplateField(int id)
+        [HttpDelete("{templateFieldId:int}")]
+        public async Task<ActionResult<ApiResponse>> DeleteTemplateField(int entityTypeId, int templateFieldId)
         {
             try
             {
-                var field = await _repo.GetDataFieldTemplateByIdAsync(id);
+                if (await _repo.GetEntityTypeByIdAsync(entityTypeId) == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Tipo de entidade não encontrado."));
+                }
+
+                var field = await _repo.GetDataFieldTemplateByIdAsync(templateFieldId);
                 if (field == null)
                 {
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Campo não encontrado."));
