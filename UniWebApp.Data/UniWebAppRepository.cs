@@ -82,6 +82,20 @@ namespace UniWebApp.Data
         {
             _db.DataFieldsTemplate.Add(newFieldTemplate);
         }
+        public void RemoveDataFieldTemplate(DataFieldTemplate fieldToDelete)
+        {
+            _db.DataFieldsTemplate.Remove(fieldToDelete);
+        }
+
+        // DataFieldTemplateComboboxOptions
+        public async Task<List<DataFieldTemplateComboboxOption>> GetDataFieldTemplateComboboxOptionsAsync(int templateDataFieldId)
+        {
+            return await _db.DataFieldsTemplateComboboxOptions.Include(x => x.DataFieldTemplate).Where(op => op.DataFieldTemplate.Id == templateDataFieldId).ToListAsync();
+        }
+        public void RemoveDataFieldTemplateComboboxOptions(List<DataFieldTemplateComboboxOption> optionsToRemove)
+        {
+            _db.DataFieldsTemplateComboboxOptions.RemoveRange(optionsToRemove);
+        }
 
         // Save
         public async Task<bool> SaveChangesAsync()

@@ -32,6 +32,11 @@ namespace UniWebApp.Data
         Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int entityTypeId);
         Task<DataFieldTemplate> GetDataFieldTemplateByNameAsync(int entityTypeId, string name);
         void AddDataFieldTemplate(DataFieldTemplate newFieldTemplate);
+        void RemoveDataFieldTemplate(DataFieldTemplate fieldToDelete);
+
+        // DataFieldTemplateComboboxOption
+        Task<List<DataFieldTemplateComboboxOption>> GetDataFieldTemplateComboboxOptionsAsync(int templateDataFieldId);
+        void RemoveDataFieldTemplateComboboxOptions(List<DataFieldTemplateComboboxOption> optionsToRemove);
 
         // Save
         Task<bool> SaveChangesAsync();
