@@ -137,7 +137,6 @@ namespace UniWebApp.Web.Controllers
                 }
 
                 field.Name = model.Name;
-                field.MustHave = model.MustHave;
                 field.FieldType = model.FieldType;
 
                 bool result = await _repo.SaveChangesAsync();

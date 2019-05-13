@@ -12,11 +12,11 @@ namespace UniWebApp.Data
         //Task<List<AppEntity>> GetEntitiesByTypeAsync(int entityTypeId);
         Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields);
 
-        //void AddEntity(AppEntity newEntity);
+        void AddEntity(AppEntity newEntity);
         //void DeleteEntity(AppEntity entityToRemove);
 
         // AppEntityDataField
-        Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId, bool majorFieldsOnly);
+        Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId);
 
         //void AddDataFieldToEntity(int EntityId, AppEntityDataField newField, bool addToAllEntitiesFromType);
         //void DeleteDataField(AppEntityDataField fieldToRemove);
@@ -33,6 +33,8 @@ namespace UniWebApp.Data
         void RemoveEntityType(AppEntityType typeToRemove);
 
         // DataFieldTemplate
+        Task<List<DataFieldTemplate>> GetEntityTypeTemplateFieldsAsync(int entityTypeId);
+
         Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int id);
 
         Task<DataFieldTemplate> GetDataFieldTemplateByNameAsync(int entityTypeId, string name);

@@ -14,8 +14,6 @@ namespace UniWebApp.Core
         [Required]
         public DataFieldTypeEnum FieldType { get; set; }
 
-        public bool MustHave { get; set; }
-
         [Required]
         public AppEntityType EntityType { get; set; }
 

@@ -9,7 +9,6 @@ namespace UniWebApp.Web.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public DataFieldTypeEnum FieldType { get; set; }
-        public bool MustHave { get; set; }
         public AppEntityTypeModel EntityType { get; set; }
         public List<DataFieldTemplateComboboxOptionModel> ComboboxOptions { get; set; }
     }
@@ -28,9 +27,6 @@ namespace UniWebApp.Web.Models
 
         [Required]
         public DataFieldTypeEnum FieldType { get; set; }
-
-        [Required]
-        public bool MustHave { get; set; }
 
         public string[] ComboboxOptions { get; set; }
     }

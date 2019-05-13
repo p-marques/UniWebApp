@@ -27,23 +27,21 @@ namespace UniWebApp.Data
 
             if (includeFields)
             {
-                result.Fields = await GetDataFieldsByEntityAsync(id, false);
+                result.Fields = await GetDataFieldsByEntityAsync(id);
             }
 
             return result;
         }
 
-        // Data Field
-        public async Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId, bool majorFieldsOnly)
+        public void AddEntity(AppEntity newEntity)
         {
-            var result = _db.AppEntityFields.Include(x => x.Entity).Where(c => c.Entity.Id == entityId);
+            _db.AppEntities.Add(newEntity);
+        }
 
-            if (majorFieldsOnly)
-            {
-                result = result.Where(v => v.Major == true);
-            }
-
-            return await result.ToListAsync();
+        // Data Field
+        public async Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId)
+        {
+            return await _db.AppEntityFields.Include(x => x.Entity).Where(c => c.Entity.Id == entityId).ToListAsync();
         }
 
         // AppEntityType
@@ -78,6 +76,12 @@ namespace UniWebApp.Data
         }
 
         // DataFieldTemplate
+        public async Task<List<DataFieldTemplate>> GetEntityTypeTemplateFieldsAsync(int entityTypeId)
+        {
+            return await _db.DataFieldsTemplate.Include(t => t.EntityType).Include(y => y.ComboboxOptions).Where(x => x.EntityType.Id == entityTypeId).ToListAsync();
+        }
+
+
         public async Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int id)
         {
             return await _db.DataFieldsTemplate.FindAsync(id);

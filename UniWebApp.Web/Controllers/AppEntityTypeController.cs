@@ -45,14 +45,19 @@ namespace UniWebApp.Web.Controllers
 
                         foreach (var field in item.TemplateFields)
                         {
-                            a.TemplateFields.Add(new DataFieldTemplateModel()
+                            var fieldModel = new DataFieldTemplateModel()
                             {
                                 Id = field.Id,
                                 Name = field.Name,
-                                FieldType = field.FieldType,
-                                MustHave = field.MustHave,
-                                ComboboxOptions = _mapper.Map<List<DataFieldTemplateComboboxOptionModel>>(await _repo.GetDataFieldTemplateComboboxOptionsAsync(field.Id))
-                            });
+                                FieldType = field.FieldType
+                            };
+
+                            if(field.FieldType == DataFieldTypeEnum.Combobox)
+                            {
+                                fieldModel.ComboboxOptions = _mapper.Map<List<DataFieldTemplateComboboxOptionModel>>(await _repo.GetDataFieldTemplateComboboxOptionsAsync(field.Id));
+                            }
+
+                            a.TemplateFields.Add(fieldModel);
                         }
                     }
 
@@ -74,6 +79,11 @@ namespace UniWebApp.Web.Controllers
             try
             {
                 AppEntityType type = await _repo.GetEntityTypeByIdAsync(id);
+                if (type == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Tipo de entidade não encontrado."));
+                }
+
                 AppEntityTypeModel typeModel = new AppEntityTypeModel()
                 {
                     Id = type.Id,
@@ -82,17 +92,23 @@ namespace UniWebApp.Web.Controllers
 
                 if (template)
                 {
+                    type.TemplateFields = await _repo.GetEntityTypeTemplateFieldsAsync(id);
                     typeModel.TemplateFields = new List<DataFieldTemplateModel>();
-                    foreach (var item in type.TemplateFields)
+                    foreach (var field in type.TemplateFields)
                     {
-                        typeModel.TemplateFields.Add(new DataFieldTemplateModel()
+                        var fieldModel = new DataFieldTemplateModel()
                         {
-                            Id = item.Id,
-                            Name = item.Name,
-                            FieldType = item.FieldType,
-                            MustHave = item.MustHave,
-                            ComboboxOptions = _mapper.Map<List<DataFieldTemplateComboboxOptionModel>>(await _repo.GetDataFieldTemplateComboboxOptionsAsync(item.Id))
-                        });
+                            Id = field.Id,
+                            Name = field.Name,
+                            FieldType = field.FieldType
+                        };
+
+                        if(field.FieldType == DataFieldTypeEnum.Combobox)
+                        {
+                            fieldModel.ComboboxOptions = _mapper.Map<List<DataFieldTemplateComboboxOptionModel>>(field.ComboboxOptions);
+                        }
+
+                        typeModel.TemplateFields.Add(fieldModel);
                     }
                 }
 
@@ -110,26 +126,20 @@ namespace UniWebApp.Web.Controllers
         {
             try
             {
-                if (await _repo.GetEntityTypeByNameAsync(model.Name.Trim()) != null)
-                {
-                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro. Tipo de entidade já existe."));
-                }
-
                 if (model.Name == null || model.Name.Length < 2 || model.Name.Length > 50)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Tamanho do nome não aceite."));
+                }
+
+                if (await _repo.GetEntityTypeByNameAsync(model.Name.Trim()) != null)
+                {
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro. Tipo de entidade já existe."));
                 }
 
                 if (model.TemplateFields == null || model.TemplateFields.Count < 1 || model.TemplateFields.Count > 5)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                         "Erro. Para criar um novo tipo de entidade é preciso criar pelo menos 1 campo e no máximo 5."));
-                }
-
-                if (model.TemplateFields.Where(x => x.MustHave == true).Count() == 0)
-                {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                        "Erro. Para criar um novo tipo de entidade é preciso criar pelo menos 1 campo obrigatório e no máximo 5."));
                 }
 
                 if (model.TemplateFields.Where(x => x.FieldType == DataFieldTypeEnum.Combobox && (x.ComboboxOptions == null || x.ComboboxOptions.Count() == 0)).Count() > 0)
@@ -146,11 +156,12 @@ namespace UniWebApp.Web.Controllers
 
                 foreach (var field in model.TemplateFields)
                 {
-                    var newField = new DataFieldTemplate();
-                    newField.Name = field.Name;
-                    newField.EntityType = newType;
-                    newField.FieldType = field.FieldType;
-                    newField.MustHave = field.MustHave;
+                    var newField = new DataFieldTemplate()
+                    {
+                        Name = field.Name,
+                        EntityType = newType,
+                        FieldType = field.FieldType
+                    };
 
                     if (newField.FieldType == DataFieldTypeEnum.Combobox)
                     {
@@ -180,28 +191,29 @@ namespace UniWebApp.Web.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<ApiResponse>> UpdateEntityTypeName(int id, AppEntityTypeModel model)
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> UpdateEntityTypeName(int id, PatchAppEntityTypeModel model)
         {
             try
             {
-                if (id <= 0)
+                if (model.Name == null || model.Name.Length < 2 || model.Name.Length > 50)
                 {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Id do objeto é obrigatório."));
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Tamanho do nome não aceite."));
                 }
 
                 model.Name = model.Name.Trim();
                 var typeToUpdate = await _repo.GetEntityTypeByIdAsync(id);
                 if (typeToUpdate == null)
                 {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Id não encontrado."));
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro. Tipo de entidade não encontrado."));
                 }
 
-                if (typeToUpdate.Name == model.Name.Trim())
+                if (typeToUpdate.Name == model.Name)
                 {
-                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, $"Recurso não foi atualizado. {model.Name.Trim()} = {typeToUpdate.Name}"));
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, $"Erro. Recurso não foi atualizado. {model.Name} = {typeToUpdate.Name}"));
                 }
 
+                string oldName = typeToUpdate.Name;
                 typeToUpdate.Name = model.Name;
 
                 bool saved = await _repo.SaveChangesAsync();
@@ -210,8 +222,7 @@ namespace UniWebApp.Web.Controllers
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar atualizar o tipo de entidade. Verifique o modelo e tente novamente."));
                 }
 
-                return Ok(new ApiResponse<AppEntityTypeModel>(StatusCodes.Status200OK,
-                    $"Tipo de entidade atualizado com sucesso.", _mapper.Map<AppEntityTypeModel>(typeToUpdate)));
+                return Ok(new ApiResponse(StatusCodes.Status200OK, $"Sucesso! Tipo de entidade atualizado com sucesso. '{oldName}' atualizado para '{model.Name}'"));
             }
             catch (Exception)
             {
@@ -224,15 +235,10 @@ namespace UniWebApp.Web.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Id do objeto é obrigatório."));
-                }
-
                 var typeToDelete = await _repo.GetEntityTypeByIdAsync(id);
                 if (typeToDelete == null)
                 {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Id não encontrado."));
+                    return NotFound(new ApiResponse(StatusCodes.Status400BadRequest, "Erro. Tipo de entidade não encontrado."));
                 }
 
                 _repo.RemoveEntityType(typeToDelete);

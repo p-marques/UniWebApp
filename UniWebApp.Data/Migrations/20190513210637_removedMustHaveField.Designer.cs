@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniWebApp.Data;
 
 namespace UniWebApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190513210637_removedMustHaveField")]
+    partial class removedMustHaveField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,7 +307,9 @@ namespace UniWebApp.Data.Migrations
                 {
                     b.HasBaseType("UniWebApp.Core.AppEntityDataField");
 
-                    b.Property<int>("SelectedOption");
+                    b.Property<int>("SelectedOptionId");
+
+                    b.HasIndex("SelectedOptionId");
 
                     b.HasDiscriminator().HasValue("AppEntityDataFieldCombobox");
                 });
@@ -421,6 +425,14 @@ namespace UniWebApp.Data.Migrations
                     b.HasOne("UniWebApp.Core.DataFieldTemplate", "DataFieldTemplate")
                         .WithMany("ComboboxOptions")
                         .HasForeignKey("DataFieldTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("UniWebApp.Core.AppEntityDataFieldCombobox", b =>
+                {
+                    b.HasOne("UniWebApp.Core.AppEntityDataFieldComboboxOption", "SelectedOption")
+                        .WithMany()
+                        .HasForeignKey("SelectedOptionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

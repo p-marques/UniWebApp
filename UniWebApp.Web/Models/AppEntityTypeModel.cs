@@ -17,4 +17,9 @@ namespace UniWebApp.Web.Models
         public string Name { get; set; }
         public List<NewDataFieldTemplateModel> TemplateFields { get; set; }
     }
+
+    public class PatchAppEntityTypeModel
+    {
+        public string Name { get; set; }
+    }
 }
