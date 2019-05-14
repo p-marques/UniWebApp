@@ -7,19 +7,25 @@ namespace UniWebApp.Data
     public interface IUniWebAppRepository
     {
         // AppEntity
-        Task<List<AppEntity>> GetAllEntitiesAsync();
+        Task<List<AppEntity>> GetAllEntitiesAsync(bool includeFields);
 
         //Task<List<AppEntity>> GetEntitiesByTypeAsync(int entityTypeId);
         Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields);
 
         void AddEntity(AppEntity newEntity);
-        //void DeleteEntity(AppEntity entityToRemove);
+        void RemoveEntity(AppEntity entityToRemove);
 
         // AppEntityDataField
         Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId);
 
         //void AddDataFieldToEntity(int EntityId, AppEntityDataField newField, bool addToAllEntitiesFromType);
         //void DeleteDataField(AppEntityDataField fieldToRemove);
+
+        void RemoveDataFieldRange(ICollection<AppEntityDataField> fieldsToRemove);
+
+        Task<List<AppEntityDataFieldComboboxOption>> GetDataFieldComboboxOptionsAsync(int fieldId);
+
+        void RemoveDataFieldComboboxOptionsRange(ICollection<AppEntityDataFieldComboboxOption> options);
 
         // AppEntityType
         Task<List<AppEntityType>> GetAllEntityTypesAsync(bool includeTemplateFields);

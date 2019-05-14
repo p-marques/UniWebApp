@@ -16,21 +16,23 @@ namespace UniWebApp.Data
         }
 
         // AppEntity
-        public async Task<List<AppEntity>> GetAllEntitiesAsync()
+        public async Task<List<AppEntity>> GetAllEntitiesAsync(bool includeFields = false)
         {
-            return await _db.AppEntities.ToListAsync();
+            if (includeFields)
+            {
+                return await _db.AppEntities.Include(z => z.Type).Include(t => t.Fields).ToListAsync();
+            }
+            return await _db.AppEntities.Include(z => z.Type).ToListAsync();
         }
 
         public async Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields)
         {
-            var result = await _db.AppEntities.FindAsync(id);
-
             if (includeFields)
             {
-                result.Fields = await GetDataFieldsByEntityAsync(id);
+                return await _db.AppEntities.Include(z => z.Type).Include(t => t.Fields).SingleOrDefaultAsync(x => x.Id == id);
             }
 
-            return result;
+            return await _db.AppEntities.Include(z => z.Type).SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public void AddEntity(AppEntity newEntity)
@@ -38,10 +40,30 @@ namespace UniWebApp.Data
             _db.AppEntities.Add(newEntity);
         }
 
+        public void RemoveEntity(AppEntity entityToRemove)
+        {
+            _db.AppEntities.Remove(entityToRemove);
+        }
+
         // Data Field
         public async Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId)
         {
             return await _db.AppEntityFields.Include(x => x.Entity).Where(c => c.Entity.Id == entityId).ToListAsync();
+        }
+
+        public async Task<List<AppEntityDataFieldComboboxOption>> GetDataFieldComboboxOptionsAsync(int fieldId)
+        {
+            return await _db.AppEntityDataFieldComboboxOptions.Include(x => x.Combobox).Where(t => t.Combobox.Id == fieldId).ToListAsync();
+        }
+
+        public void RemoveDataFieldRange(ICollection<AppEntityDataField> fieldsToRemove)
+        {
+            _db.AppEntityFields.RemoveRange(fieldsToRemove);
+        }
+
+        public void RemoveDataFieldComboboxOptionsRange(ICollection<AppEntityDataFieldComboboxOption> options)
+        {
+            _db.AppEntityDataFieldComboboxOptions.RemoveRange(options);
         }
 
         // AppEntityType

@@ -22,13 +22,139 @@ namespace UniWebApp.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAppEntities()
+        public async Task<ActionResult<ApiResponse>> GetAppEntities(bool includeFields = false)
         {
             try
             {
-                var results = await _repo.GetAllEntitiesAsync();
+                var modelResults = new List<AppEntityModel>();
+                var results = await _repo.GetAllEntitiesAsync(includeFields);
+                foreach (var entity in results)
+                {
+                    AppEntityModel model = new AppEntityModel()
+                    {
+                        Id = entity.Id,
+                        TypeId = entity.Type.Id,
+                        TypeName = entity.Type.Name
+                    };
 
-                return Ok(new ApiResponse<List<AppEntity>>(StatusCodes.Status200OK, "OK", results));
+                    if (includeFields)
+                    {
+                        model.Fields = new List<AppEntityDataFieldModel>();
+                        foreach (var field in entity.Fields)
+                        {
+                            var fieldModel = new AppEntityDataFieldModel()
+                            {
+                                FieldId = field.Id,
+                                Name = field.Name
+                            };
+
+                            switch (field.GetType().Name)
+                            {
+                                case "AppEntityDataFieldText":
+                                    fieldModel.FieldType = DataFieldTypeEnum.Text;
+                                    fieldModel.TextValue = ((AppEntityDataFieldText)field).Value;
+                                    break;
+                                case "AppEntityDataFieldNumber":
+                                    fieldModel.FieldType = DataFieldTypeEnum.Number;
+                                    fieldModel.NumberValue = ((AppEntityDataFieldNumber)field).Value;
+                                    break;
+                                case "AppEntityDataFieldDate":
+                                    fieldModel.FieldType = DataFieldTypeEnum.Date;
+                                    fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value;
+                                    break;
+                                case "AppEntityDataFieldCombobox":
+                                    fieldModel.FieldType = DataFieldTypeEnum.Combobox;
+                                    fieldModel.ComboboxSelected = ((AppEntityDataFieldCombobox)field).SelectedOption;
+                                    fieldModel.ComboboxOptions = new List<string>();
+                                    foreach (var option in await _repo.GetDataFieldComboboxOptionsAsync(fieldModel.FieldId))
+                                    {
+                                        fieldModel.ComboboxOptions.Add(option.Name);
+                                    }
+                                    break;
+                                case "AppEntityDataFieldBoolean":
+                                    fieldModel.FieldType = DataFieldTypeEnum.Boolean;
+                                    fieldModel.BooleanValue = ((AppEntityDataFieldBoolean)field).Value;
+                                    break;
+                            }
+
+                            model.Fields.Add(fieldModel);
+                        }
+                    }
+
+                    modelResults.Add(model);
+                }                
+
+                return Ok(new ApiResponse<List<AppEntityModel>>(StatusCodes.Status200OK, "OK", modelResults));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> GetEntity(int id, bool includeFields = false)
+        {
+            try
+            {
+                var entity = await _repo.GetEntityByIdAsync(id, includeFields);
+                if (entity == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa entidade não existe."));
+                }
+
+                var modelResult = new AppEntityModel()
+                {
+                    Id = entity.Id,
+                    TypeId = entity.Type.Id,
+                    TypeName = entity.Type.Name
+                };
+
+                if (includeFields)
+                {
+                    modelResult.Fields = new List<AppEntityDataFieldModel>();
+                    foreach (var field in entity.Fields)
+                    {
+                        var fieldModel = new AppEntityDataFieldModel()
+                        {
+                            FieldId = field.Id,
+                            Name = field.Name
+                        };
+
+                        switch (field.GetType().Name)
+                        {
+                            case "AppEntityDataFieldText":
+                                fieldModel.FieldType = DataFieldTypeEnum.Text;
+                                fieldModel.TextValue = ((AppEntityDataFieldText)field).Value;
+                                break;
+                            case "AppEntityDataFieldNumber":
+                                fieldModel.FieldType = DataFieldTypeEnum.Number;
+                                fieldModel.NumberValue = ((AppEntityDataFieldNumber)field).Value;
+                                break;
+                            case "AppEntityDataFieldDate":
+                                fieldModel.FieldType = DataFieldTypeEnum.Date;
+                                fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value;
+                                break;
+                            case "AppEntityDataFieldCombobox":
+                                fieldModel.FieldType = DataFieldTypeEnum.Combobox;
+                                fieldModel.ComboboxSelected = ((AppEntityDataFieldCombobox)field).SelectedOption;
+                                fieldModel.ComboboxOptions = new List<string>();
+                                foreach (var option in await _repo.GetDataFieldComboboxOptionsAsync(fieldModel.FieldId))
+                                {
+                                    fieldModel.ComboboxOptions.Add(option.Name);
+                                }
+                                break;
+                            case "AppEntityDataFieldBoolean":
+                                fieldModel.FieldType = DataFieldTypeEnum.Boolean;
+                                fieldModel.BooleanValue = ((AppEntityDataFieldBoolean)field).Value;
+                                break;
+                        }
+
+                        modelResult.Fields.Add(fieldModel);
+                    }
+                }
+
+                return Ok(new ApiResponse<AppEntityModel>(StatusCodes.Status200OK, "Ok", modelResult));
             }
             catch (Exception)
             {
@@ -143,7 +269,78 @@ namespace UniWebApp.Web.Controllers
 
                 return Created("", new ApiResponse(StatusCodes.Status201Created, "Sucesso! Nova entidade criada com sucesso."));
             }
-            catch (Exception e)
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> DeleteEntity(int id)
+        {
+            try
+            {
+                var entity = await _repo.GetEntityByIdAsync(id, true);
+                if (entity == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa entidade não existe."));
+                }
+
+                foreach (var item in entity.Fields)
+                {
+                    if (item.GetType().Name == "AppEntityDataFieldCombobox")
+                    {
+                        _repo.RemoveDataFieldComboboxOptionsRange(await _repo.GetDataFieldComboboxOptionsAsync(item.Id));
+                    }
+                }
+
+                _repo.RemoveEntity(entity);
+
+                bool saved = await _repo.SaveChangesAsync();
+                if (!saved)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar eliminar a entidade. Verifique o modelo e tente novamente."));
+                }
+
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Sucesso! Entidade foi eliminada."));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> PatchEntityType(int id, NewAppEntityModel model)
+        {
+            try
+            {
+                var entity = await _repo.GetEntityByIdAsync(id, false);
+                if (entity == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa entidade não existe."));
+                }
+
+                if (entity.Type.Id == model.TypeId)
+                {
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Esta entidade já era desse tipo."));
+                }
+
+                entity.Type = await _repo.GetEntityTypeByIdAsync(model.TypeId);
+                if (entity.Type == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa tipo de entidade não existe."));
+                }
+
+                bool saved = await _repo.SaveChangesAsync();
+                if (!saved)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar atualizar a entidade. Verifique o modelo e tente novamente."));
+                }
+
+                return Ok(new ApiResponse(StatusCodes.Status200OK, $"Sucesso! Entidade agora é do tipo '{entity.Type.Name}'."));
+            }
+            catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
             }
