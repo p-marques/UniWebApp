@@ -310,20 +310,51 @@ namespace UniWebApp.Web.Controllers
             }
         }
 
-        [HttpPatch("{id:int}")]
-        public async Task<ActionResult<ApiResponse>> PatchEntityType(int id, NewAppEntityModel model)
+        //[HttpPatch("{id:int}")]
+        //public async Task<ActionResult<ApiResponse>> PatchEntityType(int id, NewAppEntityModel model)
+        //{
+        //    try
+        //    {
+        //        var entity = await _repo.GetEntityByIdAsync(id, false);
+        //        if (entity == null)
+        //        {
+        //            return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa entidade não existe."));
+        //        }
+
+        //        if (entity.Type.Id == model.TypeId)
+        //        {
+        //            return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Esta entidade já era desse tipo."));
+        //        }
+
+        //        entity.Type = await _repo.GetEntityTypeByIdAsync(model.TypeId);
+        //        if (entity.Type == null)
+        //        {
+        //            return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa tipo de entidade não existe."));
+        //        }
+
+        //        bool saved = await _repo.SaveChangesAsync();
+        //        if (!saved)
+        //        {
+        //            return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar atualizar a entidade. Verifique o modelo e tente novamente."));
+        //        }
+
+        //        return Ok(new ApiResponse(StatusCodes.Status200OK, $"Sucesso! Entidade agora é do tipo '{entity.Type.Name}'."));
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro interno do servidor.");
+        //    }
+        //}
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> UpdateEntity(int id, NewAppEntityModel model)
         {
             try
             {
-                var entity = await _repo.GetEntityByIdAsync(id, false);
+                var entity = await _repo.GetEntityByIdAsync(id, true);
                 if (entity == null)
                 {
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa entidade não existe."));
-                }
-
-                if (entity.Type.Id == model.TypeId)
-                {
-                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Esta entidade já era desse tipo."));
                 }
 
                 entity.Type = await _repo.GetEntityTypeByIdAsync(model.TypeId);
@@ -332,13 +363,107 @@ namespace UniWebApp.Web.Controllers
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Erro! Essa tipo de entidade não existe."));
                 }
 
+                if (model.Fields == null || model.Fields.Count == 0)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Entidade precisa de pelo menos um campo."));
+                }
+
+                foreach (var item in entity.Fields)
+                {
+                    if (item.GetType().Name == "AppEntityDataFieldCombobox")
+                    {
+                        _repo.RemoveDataFieldComboboxOptionsRange(await _repo.GetDataFieldComboboxOptionsAsync(item.Id));
+                    }
+                }
+
+                bool modelErrors = false;
+                entity.Fields = new List<AppEntityDataField>();
+                foreach (var field in model.Fields)
+                {
+                    if (field.FieldType < 0 || field.FieldType > DataFieldTypeEnum.Boolean || string.IsNullOrWhiteSpace(field.Name))
+                    {
+                        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));
+                    }
+
+                    if (field.FieldType == DataFieldTypeEnum.Text)
+                    {
+                        if (string.IsNullOrWhiteSpace(field.TextValue)) { modelErrors = true; break; }
+                        entity.Fields.Add(new AppEntityDataFieldText()
+                        {
+                            Entity = entity,
+                            Name = field.Name,
+                            Value = field.TextValue
+                        });
+                    }
+                    else if (field.FieldType == DataFieldTypeEnum.Number)
+                    {
+                        if (field.NumberValue == decimal.MinValue) { modelErrors = true; break; }
+                        entity.Fields.Add(new AppEntityDataFieldNumber()
+                        {
+                            Entity = entity,
+                            Name = field.Name,
+                            Value = field.NumberValue
+                        });
+                    }
+                    else if (field.FieldType == DataFieldTypeEnum.Date)
+                    {
+                        if (field.DateValue == null) { modelErrors = true; break; }
+                        entity.Fields.Add(new AppEntityDataFieldDate()
+                        {
+                            Entity = entity,
+                            Name = field.Name,
+                            Value = field.DateValue
+                        });
+                    }
+                    else if (field.FieldType == DataFieldTypeEnum.Combobox)
+                    {
+                        var newField = new AppEntityDataFieldCombobox()
+                        {
+                            Entity = entity,
+                            Name = field.Name,
+                            Options = new List<AppEntityDataFieldComboboxOption>(),
+                            SelectedOption = field.ComboboxSelected
+                        };
+
+                        if (field.ComboboxOptions == null || field.ComboboxOptions.Length == 0 || field.ComboboxSelected < 0) { modelErrors = true; break; }
+                        for (int i = 0; i < field.ComboboxOptions.Length; i++)
+                        {
+                            var newOption = new AppEntityDataFieldComboboxOption()
+                            {
+                                Name = field.ComboboxOptions[i],
+                                Combobox = newField
+                            };
+
+                            newField.Options.Add(newOption);
+                        }
+
+                        entity.Fields.Add(newField);
+                    }
+                    else if (field.FieldType == DataFieldTypeEnum.Boolean)
+                    {
+                        entity.Fields.Add(new AppEntityDataFieldBoolean()
+                        {
+                            Entity = entity,
+                            Name = field.Name,
+                            Value = field.BooleanValue
+                        });
+                    }
+                }
+
+                if (modelErrors)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));
+                }
+
+                _repo.UpdateEntity(entity);
+
                 bool saved = await _repo.SaveChangesAsync();
                 if (!saved)
                 {
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar atualizar a entidade. Verifique o modelo e tente novamente."));
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro ao tentar atualizar entidade. Verifique o modelo e tente novamente."));
                 }
 
-                return Ok(new ApiResponse(StatusCodes.Status200OK, $"Sucesso! Entidade agora é do tipo '{entity.Type.Name}'."));
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Sucesso! Entidade foi atualizada."));
             }
             catch (Exception)
             {

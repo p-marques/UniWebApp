@@ -40,6 +40,11 @@ namespace UniWebApp.Data
             _db.AppEntities.Add(newEntity);
         }
 
+        public void UpdateEntity(AppEntity entity)
+        {
+            _db.AppEntities.Update(entity);
+        }
+
         public void RemoveEntity(AppEntity entityToRemove)
         {
             _db.AppEntities.Remove(entityToRemove);

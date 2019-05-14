@@ -13,6 +13,9 @@ namespace UniWebApp.Data
         Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields);
 
         void AddEntity(AppEntity newEntity);
+
+        void UpdateEntity(AppEntity entity);
+
         void RemoveEntity(AppEntity entityToRemove);
 
         // AppEntityDataField
