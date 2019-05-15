@@ -24,6 +24,8 @@ namespace UniWebApp.Web.Models
         public decimal NumberValue { get; set; }
 
         public string TextValue { get; set; }
+
+        public string Section { get; set; }
     }
 
     public class NewAppEntityDataFieldModel
@@ -45,5 +47,7 @@ namespace UniWebApp.Web.Models
         public decimal NumberValue { get; set; }
 
         public string TextValue { get; set; }
+
+        public string Section { get; set; }
     }
 }

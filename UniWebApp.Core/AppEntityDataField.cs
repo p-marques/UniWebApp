@@ -9,6 +9,9 @@ namespace UniWebApp.Core
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string Section { get; set; }
+
         // Navigation
         [Required]
         public AppEntity Entity { get; set; }

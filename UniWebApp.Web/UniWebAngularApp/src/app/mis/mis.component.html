@@ -1,3 +1,35 @@
-<p>
-  mis works!
-</p>
+<header>
+  <h2>Management Information System</h2>
+  <p style="margin-top: 5px">This sample application shows how to deal with always changing information needs.</p>
+</header>
+<div fxLayout="column" class="content-container">
+
+  <div fxLayout="row" class="search-bar-container">
+    <form class="search-form">
+      <mat-form-field class="full-width-form-field">
+        <mat-icon matPrefix style="margin-right: 5px">search</mat-icon>
+        <input matInput placeholder="Search">
+        <mat-hint align="start">How to: [FieldName]:[FieldValue] Example: Nome:Diogo Daniel Silva Matos</mat-hint>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="entity-list-container">
+    <mat-action-list class="entity-list">
+      <mat-list-item *ngFor="let entity of appEntities; let i = index" [attr.data-index]="i" [ngClass]="{zeroMargin: i == 0 || i == (appEntities.length - 1)}" class="entity" (click)="selectEntity(entity)">
+        <div fxLayout="column" class="type-title-container">
+          <p class="type-name">{{ entity.typeName }}</p>
+        </div>
+        <div class="fields-container">
+          <p>{{ entity.fields[0].name }}</p>
+          <h3>{{ entity.fields[0].textValue }}</h3>
+        </div>
+      </mat-list-item>
+    </mat-action-list>
+  </div>
+
+  <div class="selected-entity-container">
+    {{selectedEntity?.fields[0].textValue}}
+  </div>
+
+</div>

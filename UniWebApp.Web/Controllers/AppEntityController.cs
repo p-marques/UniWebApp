@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniWebApp.Core;
@@ -45,7 +44,8 @@ namespace UniWebApp.Web.Controllers
                             var fieldModel = new AppEntityDataFieldModel()
                             {
                                 FieldId = field.Id,
-                                Name = field.Name
+                                Name = field.Name,
+                                Section = field.Section
                             };
 
                             switch (field.GetType().Name)
@@ -118,7 +118,8 @@ namespace UniWebApp.Web.Controllers
                         var fieldModel = new AppEntityDataFieldModel()
                         {
                             FieldId = field.Id,
-                            Name = field.Name
+                            Name = field.Name,
+                            Section = field.Section
                         };
 
                         switch (field.GetType().Name)
@@ -184,7 +185,7 @@ namespace UniWebApp.Web.Controllers
                 bool modelErrors = false;
                 foreach (var field in model.Fields)
                 {
-                    if (field.FieldType < 0 || field.FieldType > DataFieldTypeEnum.Boolean || string.IsNullOrWhiteSpace(field.Name))
+                    if (field.FieldType < 0 || field.FieldType > DataFieldTypeEnum.Boolean || string.IsNullOrWhiteSpace(field.Name) || string.IsNullOrWhiteSpace(field.Section))
                     {
                         return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));
                     }
@@ -196,6 +197,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = newEntity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.TextValue
                         });
                     }
@@ -206,6 +208,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = newEntity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.NumberValue
                         });
                     }
@@ -216,6 +219,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = newEntity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.DateValue
                         });
                     }
@@ -225,6 +229,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = newEntity,
                             Name = field.Name,
+                            Section = field.Section,
                             Options = new List<AppEntityDataFieldComboboxOption>(),
                             SelectedOption = field.ComboboxSelected
                         };
@@ -249,6 +254,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = newEntity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.BooleanValue
                         });
                     }
@@ -380,7 +386,7 @@ namespace UniWebApp.Web.Controllers
                 entity.Fields = new List<AppEntityDataField>();
                 foreach (var field in model.Fields)
                 {
-                    if (field.FieldType < 0 || field.FieldType > DataFieldTypeEnum.Boolean || string.IsNullOrWhiteSpace(field.Name))
+                    if (field.FieldType < 0 || field.FieldType > DataFieldTypeEnum.Boolean || string.IsNullOrWhiteSpace(field.Name) || string.IsNullOrWhiteSpace(field.Section))
                     {
                         return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));
                     }
@@ -392,6 +398,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = entity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.TextValue
                         });
                     }
@@ -402,6 +409,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = entity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.NumberValue
                         });
                     }
@@ -412,6 +420,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = entity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.DateValue
                         });
                     }
@@ -421,6 +430,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = entity,
                             Name = field.Name,
+                            Section = field.Section,
                             Options = new List<AppEntityDataFieldComboboxOption>(),
                             SelectedOption = field.ComboboxSelected
                         };
@@ -445,6 +455,7 @@ namespace UniWebApp.Web.Controllers
                         {
                             Entity = entity,
                             Name = field.Name,
+                            Section = field.Section,
                             Value = field.BooleanValue
                         });
                     }

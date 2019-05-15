@@ -1,0 +1,66 @@
+header {
+  background: #eee;
+  padding: 10px 0;
+  color: #333;
+  text-align: center;
+}
+
+.search-bar-container {
+  padding: 20px;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+
+.search-form {
+  width: 100%;
+}
+
+.full-width-form-field {
+  width: 100%;
+}
+
+.entity-list-container {
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.entity-list {
+  padding: 20px;
+}
+
+.entity-list mat-list-item.entity {
+  background-color: #fff;
+  box-shadow: 1px 1px 3px 0px #ccc;
+  margin: 10px 0;
+}
+
+.entity-list mat-list-item.entity.zeroMargin {
+  margin: 0;
+}
+
+.entity-list .type-title-container {
+  min-width: 10%;
+}
+
+.entity-list .type-title-container .type-name {
+  text-align: center;
+  padding: 5px;
+  font-weight: 500;
+  background: rgb(235, 226, 150);
+  border-radius: 50px;
+}
+
+.entity-list mat-list-item.entity .fields-container {
+  padding-left: 16px;
+}
+
+.entity-list mat-list-item.entity .fields-container p {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.entity-list mat-list-item.entity .fields-container h3 {
+  font-size: 18px;
+}

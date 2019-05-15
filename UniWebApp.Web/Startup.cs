@@ -30,6 +30,11 @@ namespace UniWebApp.Web
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("dev", builder => builder.AllowAnyOrigin());
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSpaStaticFiles(configuration =>
@@ -44,6 +49,7 @@ namespace UniWebApp.Web
             if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();
+                app.UseCors("dev");
             }
             else
             {
