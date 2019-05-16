@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import {
   MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule,
   MatListModule, MatCardModule, MatGridListModule, MatSnackBarModule, MatTabsModule,
-  MatInputModule, MatProgressSpinnerModule
+  MatInputModule, MatProgressSpinnerModule, MatButtonToggleModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
   imports: [
@@ -16,13 +17,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    LayoutModule,
     FlexLayoutModule,
     MatCardModule,
     MatGridListModule,
     MatSnackBarModule,
     MatTabsModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ],
   exports: [
     FormsModule,
@@ -32,13 +35,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    LayoutModule,
     FlexLayoutModule,
     MatCardModule,
     MatGridListModule,
     MatSnackBarModule,
     MatTabsModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ]
 })
 export class SharedModule { }

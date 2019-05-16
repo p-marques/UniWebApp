@@ -22,8 +22,12 @@ header {
 .entity-list-container {
   background-color: #eee;
   border-bottom: 1px solid #ccc;
-  max-height: 40vh;
+  max-height: 30vh;
   overflow-y: auto;
+}
+
+.entity-list-container mat-spinner {
+  margin-top: 20px;
 }
 
 .entity-list {
@@ -33,11 +37,16 @@ header {
 .entity-list mat-list-item.entity {
   background-color: #fff;
   box-shadow: 1px 1px 3px 0px #ccc;
-  margin: 10px 0;
+  margin: 5px 0;
+  box-sizing: border-box;
 }
 
 .entity-list mat-list-item.entity.zeroMargin {
   margin: 0;
+}
+
+.entity-list mat-list-item.entity.selected {
+  border-left: 5px solid #ff4081;
 }
 
 .entity-list .type-title-container {
@@ -63,4 +72,29 @@ header {
 
 .entity-list mat-list-item.entity .fields-container h3 {
   font-size: 18px;
+}
+
+.selected-entity-container-inner {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+  background-color: #eee;
+  min-height: 100px;
+}
+
+.mat-button-toggle-group-appearance-standard {
+  border: none;
+}
+
+.mat-button-toggle-group-appearance-standard .mat-button-toggle {
+  box-shadow: 2px 2px 5px rgba(0, 0, 50, 0.1);
+}
+
+.mat-button-toggle-group-appearance-standard .mat-button-toggle+.mat-button-toggle {
+  border-left: none;
+}
+
+.mat-button-toggle-checked {
+  background-color: #ff4081;
+  color: #fff;
 }
