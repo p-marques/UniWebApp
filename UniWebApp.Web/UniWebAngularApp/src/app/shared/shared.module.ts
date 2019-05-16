@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import {
   MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule,
   MatListModule, MatCardModule, MatGridListModule, MatSnackBarModule, MatTabsModule,
-  MatInputModule, MatProgressSpinnerModule, MatButtonToggleModule
+  MatInputModule, MatProgressSpinnerModule, MatButtonToggleModule, MatSelectModule,
+  MatDatepickerModule, MatNativeDateModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
@@ -25,7 +26,10 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatTabsModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSelectModule,
+    MatNativeDateModule,
+    MatDatepickerModule
   ],
   exports: [
     FormsModule,
@@ -43,7 +47,10 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatTabsModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSelectModule,
+    MatNativeDateModule,
+    MatDatepickerModule
   ]
 })
 export class SharedModule { }

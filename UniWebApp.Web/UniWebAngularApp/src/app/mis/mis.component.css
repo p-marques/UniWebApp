@@ -98,3 +98,26 @@ header {
   background-color: #ff4081;
   color: #fff;
 }
+
+.fields-form {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.fields-form .field-input-container {
+  background-color: #fff;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  max-width: 100%;
+  padding: 20px;
+  box-shadow: 1px 1px 3px 0px #ccc;
+}
+
+.fields-form mat-form-field {
+  width: 100%;
+  max-width: 100%;
+}
+
+.fields-form mat-form-field.zeroMargin {
+  margin-bottom: 0;
+}

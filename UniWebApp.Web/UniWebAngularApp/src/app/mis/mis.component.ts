@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MisService } from './mis.service';
 import { IAppEntity } from '../models/IAppEntity';
 import { IAppEntityField } from '../models/IAppEntityField';
+import { FieldTypeEnum } from '../models/FieldTypeEnum';
 
 @Component({
   selector: 'app-mis',
@@ -15,6 +16,7 @@ export class MisComponent implements OnInit {
   selectedEntitySections: string[];
   selectedEntitySelectedSection: string;
   selectedEntityFields: IAppEntityField[];
+  fieldsDisabled = true;
 
   constructor(private misService: MisService) { }
 
@@ -50,5 +52,7 @@ export class MisComponent implements OnInit {
     }
   }
 
-
+  public hitButton() {
+    console.log(this.selectedEntity.fields[0].dateValue);
+  }
 }
