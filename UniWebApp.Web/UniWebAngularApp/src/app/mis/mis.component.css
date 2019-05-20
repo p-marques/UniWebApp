@@ -5,6 +5,10 @@ header {
   text-align: center;
 }
 
+.content-container {
+  height: 100%;
+}
+
 .search-bar-container {
   padding: 20px;
   border-bottom: 1px solid #ccc;
@@ -74,10 +78,19 @@ header {
   font-size: 18px;
 }
 
+.selected-entity-container {
+  z-index: 1;
+  box-shadow: -8px -5px 5px rgba(0, 0, 50, 0.1);
+  min-height: 300px;
+}
+
+.select-entity-hint-container {
+  height: 300px;
+  color: #aaa;
+}
+
 .selected-entity-container-inner {
   padding: 10px;
-  border-top: 1px solid #ccc;
-  margin-top: 20px;
   background-color: #eee;
   min-height: 100px;
 }
@@ -109,7 +122,7 @@ header {
   margin-bottom: 10px;
   border-radius: 5px;
   max-width: 100%;
-  padding: 20px;
+  padding: 12px;
   box-shadow: 1px 1px 3px 0px #ccc;
 }
 

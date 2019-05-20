@@ -32,44 +32,67 @@
   </div>
 
   <div fxLayout="column" class="selected-entity-container">
-    <div *ngIf="selectedEntity != null" fxLayout="row" class="selected-entity-container-inner">
-      <div fxLayout="row wrap" fxFlex="70" class="entity-fields-container">
-        <div fxLayout="row" fxFlex="100">
-          <mat-button-toggle-group fxFlex="20" fxLayout="column" #selectedSection="matButtonToggleGroup" [value]="selectedEntitySelectedSection" (change)="onSelectedSectionChange(selectedSection.value)">
-            <mat-button-toggle *ngFor="let section of selectedEntitySections" [value]="section">{{section}}</mat-button-toggle>
-          </mat-button-toggle-group>
+    <div *ngIf="selectedEntity == null" fxLayout="column" fxLayoutAlign="center center" fxFlex="100%" class="select-entity-hint-container">
+      <h1>Seleccione uma entidade</h1>
+    </div>
+    <div *ngIf="selectedEntity != null" fxLayout="column">
 
-          <form fxFlex="80" #fieldsForm="ngForm" class="fields-form">
-            <div *ngFor="let field of selectedEntityFields; let i = index" [ngSwitch]="field.fieldType" class="field-input-container">
+      <div fxLayout="row" class="selected-entity-container-inner">
+        <div fxLayout="row wrap" fxFlex="70" class="entity-fields-container">
+          <div fxLayout="row" fxFlex="100">
+            <mat-button-toggle-group fxFlex="20" fxLayout="column" #selectedSection="matButtonToggleGroup" [value]="selectedEntitySelectedSection" (change)="onSelectedSectionChange(selectedSection.value)">
+              <mat-button-toggle *ngFor="let section of selectedEntitySections" [value]="section">{{section}}</mat-button-toggle>
+            </mat-button-toggle-group>
 
-              <mat-form-field hideRequiredMarker="true" *ngSwitchCase="0" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
-                <input matInput [name]="field.name" [(ngModel)]="field.textValue" required minlength="2" maxlength="255" [placeholder]="field.name" [disabled]="fieldsDisabled">
-                <mat-hint align="end">{{field.textValue.length}} / 256</mat-hint>
-              </mat-form-field>
+            <form fxLayout="column" fxFlex="80" #fieldsForm="ngForm" class="fields-form">
+              <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center" style="margin-bottom: 10px;">
+                  <button *ngIf="fieldsDisabled" mat-raised-button (click)="clickEditEntity()" style="margin-left: 3px">
+                    <mat-icon>edit</mat-icon><span style="padding-left: 2px">Editar</span>
+                  </button>
+                  <button *ngIf="!fieldsDisabled" mat-raised-button (click)="clickCancelEditEntity()" style="margin-left: 3px; border: 1px solid red">
+                    <mat-icon>cancel</mat-icon><span style="padding-left: 2px">Cancelar</span>
+                  </button>
+                  <button *ngIf="!fieldsDisabled" mat-raised-button style="margin-left: 3px; border: 1px solid #7FFF56">
+                      <mat-icon>save</mat-icon><span style="padding-left: 2px">Guardar</span>
+                  </button>
+              </div>
 
-              <mat-form-field hideRequiredMarker="true" *ngSwitchCase="3" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
-                  <mat-select [name]="field.name" [(ngModel)]="field.comboboxSelected" [placeholder]="field.name" required [disabled]="fieldsDisabled">
-                    <mat-option *ngFor="let option of field.comboboxOptions" [value]="field.comboboxOptions.indexOf(option)">
-                      {{option}}
-                    </mat-option>
-                  </mat-select>
-              </mat-form-field>
+              <div *ngFor="let field of selectedEntityFields; let i = index" [ngSwitch]="field.fieldType" class="field-input-container">
 
-              <mat-form-field hideRequiredMarker="true">
-                <input matInput [name]="field.name" [value]="field.dateValue" [matDatepicker]="picker" placeholder="Choose a date">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
+                <mat-form-field hideRequiredMarker="true" *ngSwitchCase="0" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
+                  <input matInput [name]="field.name" [(ngModel)]="field.textValue" required minlength="2" maxlength="255" [placeholder]="field.name" [disabled]="fieldsDisabled">
+                  <mat-hint align="end">{{field.textValue.length}} / 256</mat-hint>
+                </mat-form-field>
 
-            </div>
+                <mat-form-field hideRequiredMarker="true" *ngSwitchCase="1" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
+                  <input matInput type="number" [name]="field.name" min="0" [(ngModel)]="field.numberValue">
+                </mat-form-field>
 
-            <button (click)="hitButton()">HIT</button>
+                <mat-form-field hideRequiredMarker="true" *ngSwitchCase="2" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
+                  <input matInput type="date" [name]="field.name" [(ngModel)]="field.dateValue">
+                </mat-form-field>
 
-          </form>
+                <mat-form-field hideRequiredMarker="true" *ngSwitchCase="3" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
+                    <mat-select [name]="field.name" [(ngModel)]="field.comboboxSelected" [placeholder]="field.name" required [disabled]="fieldsDisabled">
+                      <mat-option *ngFor="let option of field.comboboxOptions" [value]="field.comboboxOptions.indexOf(option)">
+                        {{option}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
 
+                <mat-form-field hideRequiredMarker="true" *ngSwitchCase="4" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
+                  <input matInput type="checkbox" [name]="field.name" [(ngModel)]="field.booleanValue">
+                </mat-form-field>
+
+              </div>
+
+            </form>
+
+          </div>
         </div>
+        <div class="entity-relations-container">B</div>
       </div>
-      <div class="entity-relations-container">B</div>
+
     </div>
   </div>
 
