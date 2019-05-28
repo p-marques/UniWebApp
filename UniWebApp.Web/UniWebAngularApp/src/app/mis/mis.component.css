@@ -112,6 +112,23 @@ header {
   color: #fff;
 }
 
+mat-list.sections-list mat-list-item {
+  background-color: #fff;
+}
+
+mat-list.sections-list mat-list-item button {
+  background: transparent;
+}
+
+mat-list.sections-list mat-list-item.selected {
+  background-color: #ff4081;
+  color: #fff;
+}
+
+mat-list.sections-list mat-list-item.selected button {
+  color: #fff;
+}
+
 .fields-form {
   width: 100%;
   padding: 0 10px;
@@ -133,4 +150,24 @@ header {
 
 .fields-form mat-form-field.zeroMargin {
   margin-bottom: 0;
+}
+
+.fields-form .field-input-container .inline-field-buttons-container {
+  margin-left: 5px;
+}
+
+.fields-form .field-input-container .inline-field-buttons-container button {
+  margin-left: 3px;
+}
+
+.fields-form .field-input-container .inline-field-buttons-container button.red {
+  color: red;
+}
+
+.fields-form button.on-fields-edit-btn {
+  margin-left: 3px;
+}
+
+.fields-form button.on-fields-edit-btn.on-fields-edit-btn-save {
+  color: rgb(54, 153, 54);
 }

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Atualizar Nome da Secção</h1>
+<div mat-dialog-content>
+  <mat-form-field hideRequiredMarker="true">
+    <input matInput [(ngModel)]="data.responseObject" minlength="2" maxlength="50">
+    <mat-hint align="end">{{data.responseObject.length}} / 50</mat-hint>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Cancelar</button>
+  <button mat-button (click)="onSaveClick()" cdkFocusInitial>Guardar</button>
+</div>

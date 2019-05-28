@@ -32,7 +32,7 @@ namespace UniWebApp.Web
 
             services.AddCors(options =>
             {
-                options.AddPolicy("dev", builder => builder.AllowAnyOrigin());
+            options.AddPolicy("dev", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

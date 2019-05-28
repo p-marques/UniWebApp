@@ -40,27 +40,34 @@
       <div fxLayout="row" class="selected-entity-container-inner">
         <div fxLayout="row wrap" fxFlex="70" class="entity-fields-container">
           <div fxLayout="row" fxFlex="100">
-            <mat-button-toggle-group fxFlex="20" fxLayout="column" #selectedSection="matButtonToggleGroup" [value]="selectedEntitySelectedSection" (change)="onSelectedSectionChange(selectedSection.value)">
-              <mat-button-toggle *ngFor="let section of selectedEntitySections" [value]="section">{{section}}</mat-button-toggle>
-            </mat-button-toggle-group>
+
+            <mat-list fxFlex="20" class="sections-list">
+              <mat-list-item *ngFor="let section of selectedEntitySections; let i = index" [ngClass]="{selected: section == selectedEntitySelectedSection}" [attr.data-index]="i" (click)="setSelectedSection(section)">
+                <button mat-flat-button>{{section}}</button>
+                <span style="flex: 1 1 auto"></span>
+                <button *ngIf="!fieldsDisabled && i > 0" mat-icon-button matTooltip="Editar nome da secção" (click)="clickEditSectionName(section)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
 
             <form fxLayout="column" fxFlex="80" #fieldsForm="ngForm" class="fields-form">
               <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center" style="margin-bottom: 10px;">
-                  <button *ngIf="fieldsDisabled" mat-raised-button (click)="clickEditEntity()" style="margin-left: 3px">
+                  <button *ngIf="fieldsDisabled" mat-raised-button (click)="clickEditEntity()" class="on-fields-edit-btn">
                     <mat-icon>edit</mat-icon><span style="padding-left: 2px">Editar</span>
                   </button>
-                  <button *ngIf="!fieldsDisabled" mat-raised-button (click)="clickCancelEditEntity()" style="margin-left: 3px; border: 1px solid red">
+                  <button *ngIf="!fieldsDisabled" mat-raised-button (click)="clickCancelEditEntity()" class="on-fields-edit-btn on-fields-edit-btn-cancel">
                     <mat-icon>cancel</mat-icon><span style="padding-left: 2px">Cancelar</span>
                   </button>
-                  <button *ngIf="!fieldsDisabled" mat-raised-button style="margin-left: 3px; border: 1px solid #7FFF56">
+                  <button *ngIf="!fieldsDisabled" [disabled]="!fieldsForm.valid" mat-raised-button (click)="clickSaveEditEntity()" class="on-fields-edit-btn on-fields-edit-btn-save">
                       <mat-icon>save</mat-icon><span style="padding-left: 2px">Guardar</span>
                   </button>
               </div>
 
-              <div *ngFor="let field of selectedEntityFields; let i = index" [ngSwitch]="field.fieldType" class="field-input-container">
+              <div *ngFor="let field of selectedEntityFieldsFiltered; let i = index" [ngSwitch]="field.fieldType" class="field-input-container" fxLayout="row" fxLayoutAlign="start center">
 
                 <mat-form-field hideRequiredMarker="true" *ngSwitchCase="0" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
-                  <input matInput [name]="field.name" [(ngModel)]="field.textValue" required minlength="2" maxlength="255" [placeholder]="field.name" [disabled]="fieldsDisabled">
+                  <input matInput [name]="field.name" [(ngModel)]="field.textValue" required minlength="2" maxlength="256" [placeholder]="field.name" [disabled]="fieldsDisabled">
                   <mat-hint align="end">{{field.textValue.length}} / 256</mat-hint>
                 </mat-form-field>
 
@@ -83,6 +90,15 @@
                 <mat-form-field hideRequiredMarker="true" *ngSwitchCase="4" [ngClass]="{zeroMargin: i === (selectedEntityFields.length - 1)}">
                   <input matInput type="checkbox" [name]="field.name" [(ngModel)]="field.booleanValue">
                 </mat-form-field>
+
+                <div class="inline-field-buttons-container" fxLayout="row">
+                  <button *ngIf="!fieldsDisabled" mat-icon-button matTooltip="Eliminar campo" class="on-fields-inline-edit-btn red" (click)="clickRemoveField(field)">
+                      <mat-icon>delete</mat-icon>
+                  </button>
+                  <button *ngIf="!fieldsDisabled" mat-button class="on-fields-inline-edit-btn" (click)="clickMoveFieldToSection(field)">
+                      <mat-icon>swap_horiz</mat-icon><span style="padding-left: 2px">Mover</span>
+                  </button>
+                </div>
 
               </div>
 

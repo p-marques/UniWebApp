@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Mover campo para outra secção</h1>
+<div mat-dialog-content>
+  <mat-form-field hideRequiredMarker="true">
+    <input matInput [(ngModel)]="data.responseObject" minlength="2" maxlength="50" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of data.options" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-hint align="end">{{data.responseObject.length}} / 50</mat-hint>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Cancelar</button>
+  <button mat-button (click)="onSaveClick()" cdkFocusInitial>Guardar</button>
+</div>

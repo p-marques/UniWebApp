@@ -10,6 +10,8 @@ import { HomeModule } from './home/home.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav.component';
 import { MisModule } from './mis/mis.module';
+import { UpdateSectionNameDialogComponent } from './mis/dialogs/update-section-name-dialog.component';
+import { MoveFieldToSectionDialogComponent } from './mis/dialogs/move-field-to-section-dialog.component';
 
 
 @NgModule({
@@ -25,6 +27,10 @@ import { MisModule } from './mis/mis.module';
     HomeModule,
     MisModule,
     AppRoutingModule
+  ],
+  entryComponents: [
+    UpdateSectionNameDialogComponent,
+    MoveFieldToSectionDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

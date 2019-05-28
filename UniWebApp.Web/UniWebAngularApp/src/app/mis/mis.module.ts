@@ -5,9 +5,15 @@ import { SharedModule } from '../shared/shared.module';
 import { MisRoutingModule } from './mis-routing.module';
 
 import { MisComponent } from './mis.component';
+import { UpdateSectionNameDialogComponent } from './dialogs/update-section-name-dialog.component';
+import { MoveFieldToSectionDialogComponent } from './dialogs/move-field-to-section-dialog.component';
 
 @NgModule({
-  declarations: [MisComponent],
+  declarations: [
+    MisComponent,
+    UpdateSectionNameDialogComponent,
+    MoveFieldToSectionDialogComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

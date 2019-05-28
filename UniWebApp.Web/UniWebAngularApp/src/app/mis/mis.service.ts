@@ -8,11 +8,15 @@ import { IApiResponse, IApiResponseWithReturn } from '../models/IApiResponse';
   providedIn: 'root'
 })
 export class MisService {
-  private getEntitiesUrl = 'http://localhost:53115/api/entities?includeFields=true';
+  private entityUrl = 'http://localhost:53115/api/entities';
 
   constructor(private http: HttpClient) { }
 
   public getEntities(): Observable<IApiResponseWithReturn<IAppEntity[]>> {
-    return this.http.get<IApiResponseWithReturn<IAppEntity[]>>(this.getEntitiesUrl);
+    return this.http.get<IApiResponseWithReturn<IAppEntity[]>>(this.entityUrl + '?includeFields=true');
+  }
+
+  public updateEntity(entity: IAppEntity): Observable<IApiResponse> {
+    return this.http.put<IApiResponse>(this.entityUrl + '/' + entity.id, entity);
   }
 }
