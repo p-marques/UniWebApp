@@ -31,6 +31,21 @@ namespace UniWebApp.Data
             return await _db.AppEntities.Include(z => z.Type).SingleOrDefaultAsync(x => x.Id == id);
         }
 
+        public bool GetEntityExistsByName(string name)
+        {
+            bool result = false;
+            var entities = _db.AppEntities.Include(x => x.Fields);
+            foreach (var entity in entities)
+            {
+                if(entity.Fields.Where(t => t.Name == "Nome" && ((AppEntityDataFieldText)t).Value == name).Count() > 0)
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
         public void AddEntity(AppEntity newEntity)
         {
             _db.AppEntities.Add(newEntity);
@@ -44,6 +59,12 @@ namespace UniWebApp.Data
         public void RemoveEntity(AppEntity entityToRemove)
         {
             _db.AppEntities.Remove(entityToRemove);
+        }
+
+        // Relations
+        public async Task<List<AppEntityRelation>> GetEntityRelationsAsync(int entityId)
+        {
+            return await _db.AppEntityRelations.Include(y => y.Entity).Where(t => t.Entity.Id == entityId || t.relatedEntityId == entityId).ToListAsync();
         }
 
         // Data Field
@@ -68,13 +89,8 @@ namespace UniWebApp.Data
         }
 
         // AppEntityType
-        public async Task<List<AppEntityType>> GetAllEntityTypesAsync(bool includeTemplateFields)
+        public async Task<List<AppEntityType>> GetAllEntityTypesAsync()
         {
-            if (includeTemplateFields)
-            {
-                return await _db.AppEntityTypes.Include(d => d.TemplateFields).ToListAsync();
-            }
-
             return await _db.AppEntityTypes.ToListAsync();
         }
 
@@ -96,44 +112,6 @@ namespace UniWebApp.Data
         public void RemoveEntityType(AppEntityType typeToRemove)
         {
             _db.AppEntityTypes.Remove(typeToRemove);
-        }
-
-        // DataFieldTemplate
-        public async Task<List<DataFieldTemplate>> GetEntityTypeTemplateFieldsAsync(int entityTypeId)
-        {
-            return await _db.DataFieldsTemplate.Include(t => t.EntityType).Include(y => y.ComboboxOptions).Where(x => x.EntityType.Id == entityTypeId).ToListAsync();
-        }
-
-
-        public async Task<DataFieldTemplate> GetDataFieldTemplateByIdAsync(int id)
-        {
-            return await _db.DataFieldsTemplate.FindAsync(id);
-        }
-
-        public async Task<DataFieldTemplate> GetDataFieldTemplateByNameAsync(int entityTypeId, string name)
-        {
-            return await _db.DataFieldsTemplate.Include(x => x.EntityType).Where(x => x.EntityType.Id == entityTypeId).SingleOrDefaultAsync(q => q.Name == name);
-        }
-
-        public void AddDataFieldTemplate(DataFieldTemplate newFieldTemplate)
-        {
-            _db.DataFieldsTemplate.Add(newFieldTemplate);
-        }
-
-        public void RemoveDataFieldTemplate(DataFieldTemplate fieldToDelete)
-        {
-            _db.DataFieldsTemplate.Remove(fieldToDelete);
-        }
-
-        // DataFieldTemplateComboboxOptions
-        public async Task<List<DataFieldTemplateComboboxOption>> GetDataFieldTemplateComboboxOptionsAsync(int templateDataFieldId)
-        {
-            return await _db.DataFieldsTemplateComboboxOptions.Include(x => x.DataFieldTemplate).Where(op => op.DataFieldTemplate.Id == templateDataFieldId).ToListAsync();
-        }
-
-        public void RemoveDataFieldTemplateComboboxOptions(List<DataFieldTemplateComboboxOption> optionsToRemove)
-        {
-            _db.DataFieldsTemplateComboboxOptions.RemoveRange(optionsToRemove);
         }
 
         // Save

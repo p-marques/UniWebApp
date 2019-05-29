@@ -23,8 +23,7 @@ namespace UniWebApp.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("SqLite")));
 
             services.AddScoped<IUniWebAppRepository, UniWebAppRepository>();
 
@@ -48,7 +47,6 @@ namespace UniWebApp.Web
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
                 app.UseCors("dev");
             }
             else
@@ -57,7 +55,6 @@ namespace UniWebApp.Web
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

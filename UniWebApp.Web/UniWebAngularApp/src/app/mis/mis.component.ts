@@ -11,6 +11,7 @@ import { FieldTypeEnum } from '../models/FieldTypeEnum';
 import { AddFieldDialogComponent } from './dialogs/add-field-dialog.component';
 import { IAppEntityType } from '../models/IAppEntityType';
 import { AddEntityDialogComponent } from './dialogs/add-entity-dialog.component';
+import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-entity-dialog.component';
 
 @Component({
   selector: 'app-mis',
@@ -54,12 +55,18 @@ export class MisComponent implements OnInit {
     }
   }
 
-  private updateEntitiesList(withFieldName?: string, withFieldValue?: string) {
+  private updateEntitiesList(withFieldName?: string, withFieldValue?: string, entityToSelect?: string) {
     this.isBusy = true;
     this.misService.getEntities(withFieldName, withFieldValue).subscribe(
       data => {
         this.appEntities = data.return;
         this.isBusy = false;
+        if (entityToSelect != null) {
+          const a = this.appEntities.filter(t => t.name === entityToSelect);
+          if (a.length > 0) {
+            this.selectEntity(a[0]);
+          }
+        }
       }
     );
   }
@@ -72,6 +79,30 @@ export class MisComponent implements OnInit {
     const dialogRef = this.dialog.open(AddEntityDialogComponent, {
       minWidth: '400px',
       data: dialogObj
+    });
+
+    dialogRef.afterClosed().subscribe((result: IDialogData<IAppEntity, string>) => {
+      if (!result.success) { return; }
+      this.updateEntitiesList(null, null, result.responseObject.fields[0].textValue);
+    });
+  }
+
+  public clickRemoveEntity() {
+    const dialogObj: IDialogData<boolean, string> = { success: false, responseObject: false, options: null };
+    const dialogRef = this.dialog.open(ConfirmDeleteEntityDialogComponent, {
+      minWidth: '400px',
+      data: dialogObj
+    });
+
+    dialogRef.afterClosed().subscribe((result: IDialogData<boolean, string>) => {
+      if (!result.success) { return; }
+      this.misService.removeEntity(this.selectedEntity).subscribe(data => {
+        this.snackService.showSnackBar(data.message, null, 5000);
+        if (data.status === 200) {
+          this.updateEntitiesList();
+          this.selectedEntity = null;
+        }
+      });
     });
   }
 
@@ -170,8 +201,7 @@ export class MisComponent implements OnInit {
         this.snackService.showSnackBar(data.message, null, 5000);
         if (data.status === 200) {
           this.fieldsDisabled = true;
-          this.selectedEntity = null;
-          this.updateEntitiesList();
+          this.updateEntitiesList(null, null, this.selectedEntity.fields.filter(t => t.name === 'Nome')[0].textValue);
         }
       }
     );

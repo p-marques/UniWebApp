@@ -13,6 +13,8 @@ namespace UniWebApp.Web.Models
         public string Name { get; set; }
 
         public List<AppEntityDataFieldModel> Fields { get; set; }
+
+        public List<AppEntityRelationModel> Relations { get; set; }
     }
 
     public class NewAppEntityModel

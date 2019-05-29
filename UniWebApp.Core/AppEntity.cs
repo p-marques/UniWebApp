@@ -11,5 +11,7 @@ namespace UniWebApp.Core
         public AppEntityType Type { get; set; }
 
         public ICollection<AppEntityDataField> Fields { get; set; }
+
+        public ICollection<AppEntityRelation> Relations { get; set; }
     }
 }

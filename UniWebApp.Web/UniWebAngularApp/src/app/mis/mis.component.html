@@ -5,7 +5,7 @@
 <div fxLayout="column" class="content-container">
 
   <div fxLayout="column" class="search-bar-container">
-    <div fxLayout="row">
+    <div fxLayout="row" style="margin-bottom: 5px">
       <button mat-raised-button color="accent" (click)="clickAddEntity()">
         <mat-icon>add</mat-icon><span style="padding-left: 2px">Nova Entidade</span>
       </button>
@@ -29,6 +29,9 @@
     <div fxLayout="column" fxLayoutAlign="center center" class="spinner-container">
       <mat-spinner *ngIf="isBusy" color="accent"></mat-spinner>
     </div>
+    <div *ngIf="!isBusy && appEntities.length === 0" fxLayout="row" fxLayoutAlign="center center">
+      <h1 style="margin-top: 10px">Nenhuma entidade para mostrar</h1>
+    </div>
     <mat-action-list class="entity-list">
       <mat-list-item *ngFor="let entity of appEntities; let i = index" [attr.data-index]="i" [ngClass]="{zeroMargin: i === 0 || i === (appEntities.length - 1), selected: entity == selectedEntity}" class="entity" (click)="selectEntity(entity)">
         <div fxLayout="column" class="type-title-container">
@@ -42,7 +45,7 @@
   </div>
 
   <div fxLayout="column" class="selected-entity-container">
-    <div *ngIf="selectedEntity == null" fxLayout="column" fxLayoutAlign="center center" fxFlex="100%" class="select-entity-hint-container">
+    <div *ngIf="!isBusy && appEntities.length > 0 && selectedEntity == null" fxLayout="column" fxLayoutAlign="center center" fxFlex="100%" class="select-entity-hint-container">
       <h1>Seleccione uma entidade</h1>
     </div>
     <div *ngIf="selectedEntity != null" fxLayout="column">
@@ -69,6 +72,9 @@
                 <span style="flex: 1 1 auto"></span>
                 <button *ngIf="fieldsDisabled" mat-raised-button (click)="clickEditEntity()" class="on-fields-edit-btn">
                   <mat-icon>edit</mat-icon><span style="padding-left: 2px">Editar</span>
+                </button>
+                <button *ngIf="!fieldsDisabled" mat-icon-button matTooltip="Eliminar Entidade" color="warn" (click)="clickRemoveEntity()">
+                  <mat-icon>delete</mat-icon>
                 </button>
                 <button *ngIf="!fieldsDisabled" mat-raised-button (click)="clickCancelEditEntity()" class="on-fields-edit-btn on-fields-edit-btn-cancel">
                   <mat-icon>cancel</mat-icon><span style="padding-left: 2px">Cancelar</span>

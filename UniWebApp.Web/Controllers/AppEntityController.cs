@@ -126,6 +126,36 @@ namespace UniWebApp.Web.Controllers
                         model.Fields.Add(fieldModel);
                     }
 
+                    var foundRelations = await _repo.GetEntityRelationsAsync(entity.Id);
+                    model.Relations = new List<AppEntityRelationModel>();
+                    foreach (var relation in foundRelations)
+                    {
+                        var relationModel = new AppEntityRelationModel()
+                        {
+                            Id = relation.Id,
+                            Description = relation.Description
+                        };
+
+                        AppEntity foundRelatedEntity = null;
+                        if (relation.Entity.Id == entity.Id)
+                        {
+                            foundRelatedEntity = await _repo.GetEntityByIdAsync(relation.relatedEntityId, true);
+                        }
+                        else if(relation.relatedEntityId == entity.Id)
+                        {
+                            foundRelatedEntity = relation.Entity;
+                        }
+
+                        relationModel.RelatedEntity = new AppEntityModel()
+                        {
+                            Id = foundRelatedEntity.Id,
+                            Name = ((AppEntityDataFieldText)foundRelatedEntity.Fields.First(t => t.Name == "Nome")).Value,
+                            TypeName = foundRelatedEntity.Type.Name
+                        };
+
+                        model.Relations.Add(relationModel);
+                    }
+
                     if(string.IsNullOrEmpty(withFieldName) && string.IsNullOrEmpty(withFieldValue))
                     {
                         modelResults.Add(model);
@@ -233,6 +263,16 @@ namespace UniWebApp.Web.Controllers
                 if (model.Fields.Where(t => t.Name == "Nome").Count() == 0)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! É obrigatório ter um campo com o nome de campo: 'Nome'."));
+                }
+
+                if (_repo.GetEntityExistsByName(model.Fields.First(t => t.Name == "Nome").TextValue))
+                {
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Uma entidade com esse nome já existe."));
+                }
+
+                if ((await _repo.GetAllEntitiesAsync()).Count() >= 50)
+                {
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Limite artificial atingido."));
                 }
 
                 AppEntity newEntity = new AppEntity();
@@ -526,6 +566,11 @@ namespace UniWebApp.Web.Controllers
                             Value = field.BooleanValue
                         });
                     }
+                }
+
+                if(entity.Fields.Count >= 20)
+                {
+                    return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Limite artificial atingido."));
                 }
 
                 if (modelErrors)

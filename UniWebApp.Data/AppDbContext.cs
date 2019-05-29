@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UniWebApp.Core;
 
 namespace UniWebApp.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -19,12 +18,16 @@ namespace UniWebApp.Data
         public DbSet<AppEntityDataFieldText> AppEntityDataFieldsText { get; set; }
         public DbSet<AppEntityDataFieldCombobox> AppEntityDataFieldsCombobox { get; set; }
         public DbSet<AppEntityDataFieldComboboxOption> AppEntityDataFieldComboboxOptions { get; set; }
-        public DbSet<DataFieldTemplate> DataFieldsTemplate { get; set; }
-        public DbSet<DataFieldTemplateComboboxOption> DataFieldsTemplateComboboxOptions { get; set; }
+        public DbSet<AppEntityRelation> AppEntityRelations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<AppEntityDataFieldCombobox>().HasMany(c => c.Options).WithOne(z => z.Combobox);
+
+            builder.Entity<AppEntityType>().HasData(
+                new AppEntityType() { Id = 1, Name = "Pessoa"},
+                new AppEntityType() { Id = 2, Name = "Pessoa Coletiva" },
+                new AppEntityType() { Id = 3, Name = "Empresa" });
 
             base.OnModelCreating(builder);
         }
