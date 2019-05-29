@@ -16,13 +16,9 @@ namespace UniWebApp.Data
         }
 
         // AppEntity
-        public async Task<List<AppEntity>> GetAllEntitiesAsync(bool includeFields = false)
+        public async Task<List<AppEntity>> GetAllEntitiesAsync()
         {
-            if (includeFields)
-            {
-                return await _db.AppEntities.Include(z => z.Type).Include(t => t.Fields).ToListAsync();
-            }
-            return await _db.AppEntities.Include(z => z.Type).ToListAsync();
+            return await _db.AppEntities.Include(z => z.Type).Include(t => t.Fields).ToListAsync();
         }
 
         public async Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields)

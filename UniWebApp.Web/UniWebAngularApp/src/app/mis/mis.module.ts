@@ -7,17 +7,27 @@ import { MisRoutingModule } from './mis-routing.module';
 import { MisComponent } from './mis.component';
 import { UpdateSectionNameDialogComponent } from './dialogs/update-section-name-dialog.component';
 import { MoveFieldToSectionDialogComponent } from './dialogs/move-field-to-section-dialog.component';
+import { AddFieldDialogComponent } from './dialogs/add-field-dialog.component';
+import { AddEntityDialogComponent } from './dialogs/add-entity-dialog.component';
 
 @NgModule({
   declarations: [
     MisComponent,
     UpdateSectionNameDialogComponent,
-    MoveFieldToSectionDialogComponent
+    MoveFieldToSectionDialogComponent,
+    AddFieldDialogComponent,
+    AddEntityDialogComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     MisRoutingModule
+  ],
+  entryComponents: [
+    UpdateSectionNameDialogComponent,
+    MoveFieldToSectionDialogComponent,
+    AddFieldDialogComponent,
+    AddEntityDialogComponent
   ]
 })
 export class MisModule { }

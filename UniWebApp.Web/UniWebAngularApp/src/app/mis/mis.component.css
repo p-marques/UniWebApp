@@ -143,7 +143,7 @@ mat-list.sections-list mat-list-item.selected button {
   box-shadow: 1px 1px 3px 0px #ccc;
 }
 
-.fields-form mat-form-field {
+.fields-form mat-form-field, .fields-form section {
   width: 100%;
   max-width: 100%;
 }

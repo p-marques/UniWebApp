@@ -19,7 +19,7 @@ namespace UniWebApp.Web.Models
 
         public int ComboboxSelected { get; set; }
 
-        public DateTime DateValue { get; set; }
+        public string DateValue { get; set; }
 
         public decimal NumberValue { get; set; }
 
@@ -42,7 +42,7 @@ namespace UniWebApp.Web.Models
 
         public int ComboboxSelected { get; set; }
 
-        public DateTime DateValue { get; set; }
+        public string DateValue { get; set; }
 
         public decimal NumberValue { get; set; }
 

@@ -5,12 +5,12 @@ import { IDialogData } from 'src/app/models/IDialogData';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'move-field-to-section-dialog',
-  templateUrl: './move-field-to-section-dialog.html',
+  templateUrl: './move-field-to-section-dialog.component.html',
 })
 export class MoveFieldToSectionDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<MoveFieldToSectionDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: IDialogData<string>) { }
+              @Inject(MAT_DIALOG_DATA) public data: IDialogData<string, string>) { }
 
   onCancelClick(): void {
     this.dialogRef.close(this.data);

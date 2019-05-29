@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UniWebApp.Core;
 using UniWebApp.Data;
@@ -21,12 +22,12 @@ namespace UniWebApp.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAppEntities(bool includeFields = false)
+        public async Task<ActionResult<ApiResponse>> GetAppEntities(string withFieldName, string withFieldValue)
         {
             try
             {
                 var modelResults = new List<AppEntityModel>();
-                var results = await _repo.GetAllEntitiesAsync(includeFields);
+                var results = await _repo.GetAllEntitiesAsync();
                 foreach (var entity in results)
                 {
                     AppEntityModel model = new AppEntityModel()
@@ -36,53 +37,104 @@ namespace UniWebApp.Web.Controllers
                         TypeName = entity.Type.Name
                     };
 
-                    if (includeFields)
+                    model.Fields = new List<AppEntityDataFieldModel>();
+                    bool foundFieldNameValueCombo = false;
+                    foreach (var field in entity.Fields)
                     {
-                        model.Fields = new List<AppEntityDataFieldModel>();
-                        foreach (var field in entity.Fields)
+                        var fieldModel = new AppEntityDataFieldModel()
                         {
-                            var fieldModel = new AppEntityDataFieldModel()
-                            {
-                                FieldId = field.Id,
-                                Name = field.Name,
-                                Section = field.Section
-                            };
+                            FieldId = field.Id,
+                            Name = field.Name,
+                            Section = field.Section
+                        };
 
-                            switch (field.GetType().Name)
-                            {
-                                case "AppEntityDataFieldText":
-                                    fieldModel.FieldType = DataFieldTypeEnum.Text;
-                                    fieldModel.TextValue = ((AppEntityDataFieldText)field).Value;
-                                    break;
-                                case "AppEntityDataFieldNumber":
-                                    fieldModel.FieldType = DataFieldTypeEnum.Number;
-                                    fieldModel.NumberValue = ((AppEntityDataFieldNumber)field).Value;
-                                    break;
-                                case "AppEntityDataFieldDate":
-                                    fieldModel.FieldType = DataFieldTypeEnum.Date;
-                                    fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value;
-                                    break;
-                                case "AppEntityDataFieldCombobox":
-                                    fieldModel.FieldType = DataFieldTypeEnum.Combobox;
-                                    fieldModel.ComboboxSelected = ((AppEntityDataFieldCombobox)field).SelectedOption;
-                                    fieldModel.ComboboxOptions = new List<string>();
-                                    foreach (var option in await _repo.GetDataFieldComboboxOptionsAsync(fieldModel.FieldId))
+                        switch (field.GetType().Name)
+                        {
+                            case "AppEntityDataFieldText":
+                                fieldModel.FieldType = DataFieldTypeEnum.Text;
+                                fieldModel.TextValue = ((AppEntityDataFieldText)field).Value;
+                                if (field.Name == "Nome")
+                                {
+                                    model.Name = fieldModel.TextValue;
+                                }
+
+                                if (!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) && 
+                                    fieldModel.Name.Normalize().ToUpper().Contains(withFieldName.Trim().Normalize().ToUpper()) && 
+                                    fieldModel.TextValue.Normalize().ToUpper().Contains(withFieldValue.Trim().Normalize().ToUpper()))
+                                {
+                                    foundFieldNameValueCombo = true;
+                                }
+
+                                break;
+                            case "AppEntityDataFieldNumber":
+                                fieldModel.FieldType = DataFieldTypeEnum.Number;
+                                fieldModel.NumberValue = ((AppEntityDataFieldNumber)field).Value;
+
+                                if(!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) && int.TryParse(withFieldValue, out int a) &&
+                                    fieldModel.Name.Normalize().ToUpper().Contains(withFieldName.Trim().Normalize().ToUpper()) &&
+                                    fieldModel.NumberValue == int.Parse(withFieldValue))
+                                {
+                                    foundFieldNameValueCombo = true;
+                                }
+
+                                break;
+                            case "AppEntityDataFieldDate":
+                                fieldModel.FieldType = DataFieldTypeEnum.Date;
+                                fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value.ToString("yyyy-MM-dd");
+
+                                if (!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) &&
+                                    fieldModel.Name.Normalize().ToUpper().Contains(withFieldName.Trim().Normalize().ToUpper()) &&
+                                    fieldModel.DateValue == withFieldValue)
+                                {
+                                    foundFieldNameValueCombo = true;
+                                }
+
+                                break;
+                            case "AppEntityDataFieldCombobox":
+                                fieldModel.FieldType = DataFieldTypeEnum.Combobox;
+                                fieldModel.ComboboxSelected = ((AppEntityDataFieldCombobox)field).SelectedOption;
+                                fieldModel.ComboboxOptions = new List<string>();
+                                foreach (var option in await _repo.GetDataFieldComboboxOptionsAsync(fieldModel.FieldId))
+                                {
+                                    fieldModel.ComboboxOptions.Add(option.Name);
+                                }
+
+                                if (!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) &&
+                                    fieldModel.Name.Normalize().ToUpper().Contains(withFieldName.Trim().Normalize().ToUpper()) &&
+                                    fieldModel.ComboboxOptions[fieldModel.ComboboxSelected].Normalize().ToUpper().Contains(withFieldValue.Trim().Normalize().ToUpper()))
+                                {
+                                    foundFieldNameValueCombo = true;
+                                }
+
+                                break;
+                            case "AppEntityDataFieldBoolean":
+                                fieldModel.FieldType = DataFieldTypeEnum.Boolean;
+                                fieldModel.BooleanValue = ((AppEntityDataFieldBoolean)field).Value;
+
+                                if (!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) && int.TryParse(withFieldValue, out int b) &&
+                                    fieldModel.Name.Normalize().ToUpper().Contains(withFieldName.Trim().Normalize().ToUpper()))
+                                {
+                                    if(int.Parse(withFieldValue) == 0 && fieldModel.BooleanValue == false || int.Parse(withFieldValue) == 1 && fieldModel.BooleanValue == true)
                                     {
-                                        fieldModel.ComboboxOptions.Add(option.Name);
+                                        foundFieldNameValueCombo = true;
                                     }
-                                    break;
-                                case "AppEntityDataFieldBoolean":
-                                    fieldModel.FieldType = DataFieldTypeEnum.Boolean;
-                                    fieldModel.BooleanValue = ((AppEntityDataFieldBoolean)field).Value;
-                                    break;
-                            }
+                                }
 
-                            model.Fields.Add(fieldModel);
+                                break;
                         }
+
+                        model.Fields.Add(fieldModel);
                     }
 
-                    modelResults.Add(model);
-                }                
+                    if(string.IsNullOrEmpty(withFieldName) && string.IsNullOrEmpty(withFieldValue))
+                    {
+                        modelResults.Add(model);
+                    }
+                    else if(!string.IsNullOrEmpty(withFieldName) && !string.IsNullOrEmpty(withFieldValue) && foundFieldNameValueCombo)
+                    {
+                        modelResults.Add(model);
+                    }
+                }
 
                 return Ok(new ApiResponse<List<AppEntityModel>>(StatusCodes.Status200OK, "OK", modelResults));
             }
@@ -93,7 +145,7 @@ namespace UniWebApp.Web.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ApiResponse>> GetEntity(int id, bool includeFields = false)
+        public async Task<ActionResult<ApiResponse>> GetEntity(int id, bool includeFields = true)
         {
             try
             {
@@ -127,6 +179,11 @@ namespace UniWebApp.Web.Controllers
                             case "AppEntityDataFieldText":
                                 fieldModel.FieldType = DataFieldTypeEnum.Text;
                                 fieldModel.TextValue = ((AppEntityDataFieldText)field).Value;
+                                if (field.Name == "Nome")
+                                {
+                                    modelResult.Name = fieldModel.TextValue;
+                                }
+
                                 break;
                             case "AppEntityDataFieldNumber":
                                 fieldModel.FieldType = DataFieldTypeEnum.Number;
@@ -134,7 +191,7 @@ namespace UniWebApp.Web.Controllers
                                 break;
                             case "AppEntityDataFieldDate":
                                 fieldModel.FieldType = DataFieldTypeEnum.Date;
-                                fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value;
+                                fieldModel.DateValue = ((AppEntityDataFieldDate)field).Value.ToString("yyyy-MM-dd");
                                 break;
                             case "AppEntityDataFieldCombobox":
                                 fieldModel.FieldType = DataFieldTypeEnum.Combobox;
@@ -171,6 +228,11 @@ namespace UniWebApp.Web.Controllers
                 if (model.TypeId <= 0 || model.Fields == null || model.Fields.Count == 0)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));
+                }
+
+                if (model.Fields.Where(t => t.Name == "Nome").Count() == 0)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! É obrigatório ter um campo com o nome de campo: 'Nome'."));
                 }
 
                 AppEntity newEntity = new AppEntity();
@@ -220,7 +282,7 @@ namespace UniWebApp.Web.Controllers
                             Entity = newEntity,
                             Name = field.Name,
                             Section = field.Section,
-                            Value = field.DateValue
+                            Value = new DateTime(int.Parse(field.DateValue.Split("-")[0]), int.Parse(field.DateValue.Split("-")[1]), int.Parse(field.DateValue.Split("-")[2]))
                         });
                     }
                     else if (field.FieldType == DataFieldTypeEnum.Combobox)
@@ -374,6 +436,11 @@ namespace UniWebApp.Web.Controllers
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Entidade precisa de pelo menos um campo."));
                 }
 
+                if(model.Fields.Where(t => t.Name == "Nome").Count() == 0)
+                {
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! É obrigatório ter um campo com o nome de campo: 'Nome'."));
+                }
+
                 foreach (var item in entity.Fields)
                 {
                     if (item.GetType().Name == "AppEntityDataFieldCombobox")
@@ -421,7 +488,7 @@ namespace UniWebApp.Web.Controllers
                             Entity = entity,
                             Name = field.Name,
                             Section = field.Section,
-                            Value = field.DateValue
+                            Value = new DateTime(int.Parse(field.DateValue.Split("-")[0]), int.Parse(field.DateValue.Split("-")[1]), int.Parse(field.DateValue.Split("-")[2]))
                         });
                     }
                     else if (field.FieldType == DataFieldTypeEnum.Combobox)

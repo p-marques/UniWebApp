@@ -10,6 +10,8 @@ namespace UniWebApp.Web.Models
 
         public string TypeName { get; set; }
 
+        public string Name { get; set; }
+
         public List<AppEntityDataFieldModel> Fields { get; set; }
     }
 

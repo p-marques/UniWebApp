@@ -1,5 +1,5 @@
-export interface IDialogData<T> {
+export interface IDialogData<T, Y> {
   success: boolean;
   responseObject: T;
-  options: T[];
+  options: Y[];
 }

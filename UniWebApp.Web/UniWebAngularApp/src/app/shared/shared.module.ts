@@ -4,7 +4,7 @@ import {
   MatListModule, MatCardModule, MatGridListModule, MatSnackBarModule, MatTabsModule,
   MatInputModule, MatProgressSpinnerModule, MatButtonToggleModule, MatSelectModule,
   MatDatepickerModule, MatNativeDateModule, MatTooltipModule, MatDialogModule,
-  MatAutocompleteModule
+  MatAutocompleteModule, MatCheckboxModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -33,7 +33,8 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatDatepickerModule,
     MatTooltipModule,
     MatDialogModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatCheckboxModule
   ],
   exports: [
     FormsModule,
@@ -57,7 +58,8 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatDatepickerModule,
     MatTooltipModule,
     MatDialogModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatCheckboxModule
   ]
 })
 export class SharedModule { }

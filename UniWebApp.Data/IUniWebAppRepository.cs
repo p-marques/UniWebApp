@@ -7,7 +7,7 @@ namespace UniWebApp.Data
     public interface IUniWebAppRepository
     {
         // AppEntity
-        Task<List<AppEntity>> GetAllEntitiesAsync(bool includeFields);
+        Task<List<AppEntity>> GetAllEntitiesAsync();
 
         //Task<List<AppEntity>> GetEntitiesByTypeAsync(int entityTypeId);
         Task<AppEntity> GetEntityByIdAsync(int id, bool includeFields);

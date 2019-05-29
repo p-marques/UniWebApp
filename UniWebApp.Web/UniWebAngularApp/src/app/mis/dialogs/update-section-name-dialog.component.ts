@@ -5,12 +5,12 @@ import { IDialogData } from 'src/app/models/IDialogData';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'update-section-name-dialog',
-  templateUrl: './update-section-name-dialog.html',
+  templateUrl: './update-section-name-dialog.component.html',
 })
 export class UpdateSectionNameDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<UpdateSectionNameDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: IDialogData<string>) { }
+              @Inject(MAT_DIALOG_DATA) public data: IDialogData<string, string>) { }
 
   onCancelClick(): void {
     this.dialogRef.close(this.data);

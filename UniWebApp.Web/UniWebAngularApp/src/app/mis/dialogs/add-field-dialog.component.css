@@ -1,0 +1,14 @@
+.combobox-options-container {
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+.combobox-options-container .combobox-options-title-container {
+  padding: 5px;
+  background-color: #3f51b5;
+  color: #fff;
+}
+
+.combobox-options-container .combobox-options-inner-container {
+  padding: 0 10px;
+}

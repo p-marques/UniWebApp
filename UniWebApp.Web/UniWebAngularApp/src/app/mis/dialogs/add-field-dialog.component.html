@@ -1,0 +1,63 @@
+<h1 mat-dialog-title>Novo campo</h1>
+<div mat-dialog-content>
+  <form #addFieldForm="ngForm" fxLayout="column">
+
+    <mat-form-field hideRequiredMarker="true">
+      <input matInput name="Nome" [(ngModel)]="data.responseObject.name" required minlength="1" maxlength="120" placeholder="Nome do campo">
+      <mat-hint align="end">{{data.responseObject.name.length}} / 120</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field hideRequiredMarker="true">
+        <mat-select name="Tipo" [(ngModel)]="data.responseObject.fieldType" placeholder="Tipo de Campo" required>
+          <mat-option *ngFor="let option of fieldTypes" [value]="fieldTypes.indexOf(option)">
+            {{option}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field hideRequiredMarker="true">
+      <input matInput name="Seccao" [(ngModel)]="data.responseObject.section" placeholder="Secção" minlength="2" maxlength="50" required [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let section of data.options" [value]="section">
+          {{section}}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-hint align="end">{{data.responseObject.section.length}} / 50</mat-hint>
+    </mat-form-field>
+
+    <div *ngIf="data.responseObject.fieldType == 3" fxLayout="column" class="combobox-options-container">
+      <div class="combobox-options-title-container">
+          <h3>Opções do campo</h3>
+      </div>
+      <div fxLayout="column" class="combobox-options-inner-container">
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field fxFlex>
+            <input matInput name="NovaOpcao" [(ngModel)]="newComboboxOption" minlength="1" maxlength="120" placeholder="Nova opção">
+            <mat-hint align="end">{{newComboboxOption.length}} / 120</mat-hint>
+          </mat-form-field>
+          <button mat-icon-button [disabled]="newComboboxOption.length < 1 || newComboboxOption.length > 120" (click)="addComboboxOption()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <mat-list fxFlex="20" class="options-list">
+          <mat-list-item *ngFor="let option of data.responseObject.comboboxOptions; let i = index" [attr.data-index]="i">
+            <p>{{option}}</p>
+            <span style="flex: 1 1 auto"></span>
+            <button mat-icon-button (click)="removeComboboxOption(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+
+      </div>
+    </div>
+
+  </form>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelExit()">Cancelar</button>
+  <button mat-button (click)="onSaveExit()" [disabled]="!addFieldForm.valid">Guardar</button>
+</div>
