@@ -1,4 +1,5 @@
 import { IAppEntityField } from './IAppEntityField';
+import { IAppEntityRelation } from './IAppEntityRelation';
 
 export interface IAppEntity {
   id: number;
@@ -6,6 +7,7 @@ export interface IAppEntity {
   typeName: string;
   name: string;
   fields: IAppEntityField[];
+  relations: IAppEntityRelation[];
 }
 
 // export class AppEntity implements IAppEntity {

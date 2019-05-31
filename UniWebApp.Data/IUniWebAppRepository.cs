@@ -23,6 +23,8 @@ namespace UniWebApp.Data
         // AppEntityRelation
         Task<List<AppEntityRelation>> GetEntityRelationsAsync(int entityId);
 
+        void RemoveRelationsRange(List<AppEntityRelation> relations);
+
         // AppEntityDataField
         Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId);
 

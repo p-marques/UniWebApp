@@ -22,5 +22,7 @@ namespace UniWebApp.Web.Models
         public int TypeId { get; set; }
 
         public List<NewAppEntityDataFieldModel> Fields { get; set; }
+
+        public List<AppEntityRelationModel> Relations { get; set; }
     }
 }

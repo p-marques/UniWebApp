@@ -20,7 +20,7 @@ export class AddEntityDialogComponent implements OnInit {
     private snackService: SnackBarService) { }
 
   ngOnInit() {
-    this.data.responseObject = { id: 0, typeId: null, typeName: null, name: null, fields: [] };
+    this.data.responseObject = { id: 0, typeId: null, typeName: null, name: null, fields: [], relations: [] };
     this.data.responseObject.fields.push({
       fieldId: 0, name: 'Nome', fieldType: FieldTypeEnum.Text, section: 'Dados Pessoais',
       booleanValue: false, comboboxOptions: null, comboboxSelected: 0, dateValue: new Date().toDateString(),

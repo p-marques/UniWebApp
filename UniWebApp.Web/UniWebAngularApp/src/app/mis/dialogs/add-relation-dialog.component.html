@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Adicionar relação</h1>
+<div mat-dialog-content>
+  <mat-action-list class="entities-list">
+    <mat-list-item *ngFor="let entity of entities" [ngClass]="{selected: entity == selectedEntity}" (click)="selectEntity(entity)">
+      <div fxLayout="column" class="type-title-container">
+        <p class="type-name">{{ entity.typeName }}</p>
+      </div>
+      <p>{{entity.name}}</p>
+    </mat-list-item>
+  </mat-action-list>
+  <div class="input-container">
+    <form #relationsForm="ngForm">
+      <mat-form-field hideRequiredMarker="true">
+        <input matInput name="Descricao" [(ngModel)]="data.responseObject.description" required minlength="2" maxlength="120" placeholder="Descrição">
+        <mat-hint align="end">{{data.responseObject.description?.length}} / 120</mat-hint>
+      </mat-form-field>
+    </form>
+  </div>
+</div>
+<div mat-dialog-actions fxFlexAlign="end end">
+  <button mat-button (click)="onCancelExit()">Cancelar</button>
+  <button mat-button [disabled]="!relationsForm.valid || this.selectedEntity == null" (click)="onSaveExit()">Guardar</button>
+</div>

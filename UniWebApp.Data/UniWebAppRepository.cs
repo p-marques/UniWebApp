@@ -67,6 +67,11 @@ namespace UniWebApp.Data
             return await _db.AppEntityRelations.Include(y => y.Entity).Where(t => t.Entity.Id == entityId || t.relatedEntityId == entityId).ToListAsync();
         }
 
+        public void RemoveRelationsRange(List<AppEntityRelation> relations)
+        {
+            _db.AppEntityRelations.RemoveRange(relations);
+        }
+
         // Data Field
         public async Task<List<AppEntityDataField>> GetDataFieldsByEntityAsync(int entityId)
         {

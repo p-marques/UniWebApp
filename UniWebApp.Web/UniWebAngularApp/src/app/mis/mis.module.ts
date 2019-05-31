@@ -10,6 +10,7 @@ import { MoveFieldToSectionDialogComponent } from './dialogs/move-field-to-secti
 import { AddFieldDialogComponent } from './dialogs/add-field-dialog.component';
 import { AddEntityDialogComponent } from './dialogs/add-entity-dialog.component';
 import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-entity-dialog.component';
+import { AddRelationDialogComponent } from './dialogs/add-relation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-ent
     MoveFieldToSectionDialogComponent,
     AddFieldDialogComponent,
     AddEntityDialogComponent,
-    ConfirmDeleteEntityDialogComponent
+    ConfirmDeleteEntityDialogComponent,
+    AddRelationDialogComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-ent
     MoveFieldToSectionDialogComponent,
     AddFieldDialogComponent,
     AddEntityDialogComponent,
-    ConfirmDeleteEntityDialogComponent
+    ConfirmDeleteEntityDialogComponent,
+    AddRelationDialogComponent
   ]
 })
 export class MisModule { }

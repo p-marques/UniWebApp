@@ -7,6 +7,13 @@
     <TypeScriptToolsVersion>3.3</TypeScriptToolsVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="UniWebAngularApp\**" />
+    <Content Remove="UniWebAngularApp\**" />
+    <EmbeddedResource Remove="UniWebAngularApp\**" />
+    <None Remove="UniWebAngularApp\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />

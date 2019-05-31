@@ -15,4 +15,13 @@ header h3 {
 
 .menu-container {
   padding: 20px;
+  background: #eee;
+  cursor: pointer;
+}
+
+.menu-item-container {
+  min-height: 200px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px 0px #ccc;
+  background: #fff;
 }

@@ -24,6 +24,8 @@ namespace UniWebApp.Data
         {
             builder.Entity<AppEntityDataFieldCombobox>().HasMany(c => c.Options).WithOne(z => z.Combobox);
 
+            builder.Entity<AppEntity>().HasMany(x => x.Relations).WithOne(z => z.Entity).OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<AppEntityType>().HasData(
                 new AppEntityType() { Id = 1, Name = "Pessoa"},
                 new AppEntityType() { Id = 2, Name = "Pessoa Coletiva" },

@@ -1,0 +1,11 @@
+<header>
+  <h2>Blender</h2>
+  <p style="margin-top: 5px">Examples of the work I've done with Blender.</p>
+</header>
+<div fxLayout="column" class="content-container">
+  <div fxLayout="row wrap" fxLayoutAlign="center center">
+    <div fxFlex="50" fxFlex.sm="50" fxFlex.gt-md="30" *ngFor="let image of images" class="image-container">
+      <img [src]="image">
+    </div>
+  </div>
+</div>

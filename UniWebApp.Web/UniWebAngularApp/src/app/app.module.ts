@@ -10,12 +10,18 @@ import { HomeModule } from './home/home.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav.component';
 import { MisModule } from './mis/mis.module';
+import { BlenderComponent } from './blender/blender.component';
+import { ModdingComponent } from './modding/modding.component';
+import { DesktopAppsComponent } from './desktop-apps/desktop-apps.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent
+    NavComponent,
+    BlenderComponent,
+    ModdingComponent,
+    DesktopAppsComponent
   ],
   imports: [
     BrowserModule,

@@ -573,6 +573,27 @@ namespace UniWebApp.Web.Controllers
                     return Conflict(new ApiResponse(StatusCodes.Status409Conflict, "Erro! Limite artificial atingido."));
                 }
 
+                _repo.RemoveRelationsRange(await _repo.GetEntityRelationsAsync(entity.Id));
+                entity.Relations = new List<AppEntityRelation>();
+                foreach (var relation in model.Relations)
+                {
+                    var relatedEntity = await _repo.GetEntityByIdAsync(relation.RelatedEntity.Id, false);
+                    if(relatedEntity == null)
+                    {
+                        modelErrors = true;
+                        break;
+                    }
+
+                    AppEntityRelation newRelation = new AppEntityRelation()
+                    {
+                        Description = relation.Description,
+                        Entity = entity,
+                        relatedEntityId = relatedEntity.Id
+                    };
+
+                    entity.Relations.Add(newRelation);
+                }
+
                 if (modelErrors)
                 {
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Erro! Verifique o modelo e tente novamente."));

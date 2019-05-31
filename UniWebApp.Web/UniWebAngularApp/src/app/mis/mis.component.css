@@ -92,7 +92,7 @@ header {
 .selected-entity-container-inner {
   padding: 10px;
   background-color: #eee;
-  min-height: 100px;
+  box-sizing: content-box;
 }
 
 .mat-button-toggle-group-appearance-standard {
@@ -114,6 +114,9 @@ header {
 
 mat-list.sections-list mat-list-item {
   background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px 0px #ccc;
+  margin-bottom: 5px;
 }
 
 mat-list.sections-list mat-list-item button {
@@ -131,7 +134,6 @@ mat-list.sections-list mat-list-item.selected button {
 
 .fields-form {
   width: 100%;
-  padding: 0 10px;
 }
 
 .fields-form .field-input-container {
@@ -170,4 +172,34 @@ mat-list.sections-list mat-list-item.selected button {
 
 .fields-form button.on-fields-edit-btn.on-fields-edit-btn-save {
   color: rgb(54, 153, 54);
+}
+
+.entity-fields-container {
+  padding: 0 10px;
+}
+
+.entity-relations-container {
+  background-color: #fff;
+  box-shadow: 1px 1px 3px 0px #ccc;
+  border-radius: 5px;
+}
+
+.entity-relations-container .entity-relations-title-container {
+  padding: 15px;
+  background: #ff4081;
+  color: #fff;
+  border-radius: 5px 5px 0 0;
+}
+
+.entity-relations-container .entity-relations-title-container h3 {
+  font-weight: 300;
+  line-height: 40px;
+}
+
+.entity-relations-container mat-list.relations-list {
+  margin: 5px 0;
+}
+
+.entity-relations-container mat-list.relations-list mat-list-item p {
+  font-size: 14px;
 }

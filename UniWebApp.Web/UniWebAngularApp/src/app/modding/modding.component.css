@@ -1,0 +1,26 @@
+header {
+  background: #eee;
+  padding: 10px 0;
+  color: #333;
+  text-align: center;
+}
+
+.content-container {
+  padding: 20px;
+}
+
+.mod-container {
+  border-top: 1px solid #ccc;
+}
+
+.mod-container img {
+  max-width: 100%;
+}
+
+.mod-description-container {
+  padding: 10px 20px;
+}
+
+.mod-description-container .mod-title-container {
+  margin-bottom: 10px;
+}

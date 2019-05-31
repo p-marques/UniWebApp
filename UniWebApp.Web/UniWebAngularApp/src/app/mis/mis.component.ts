@@ -12,6 +12,8 @@ import { AddFieldDialogComponent } from './dialogs/add-field-dialog.component';
 import { IAppEntityType } from '../models/IAppEntityType';
 import { AddEntityDialogComponent } from './dialogs/add-entity-dialog.component';
 import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-entity-dialog.component';
+import { IAppEntityRelation } from '../models/IAppEntityRelation';
+import { AddRelationDialogComponent } from './dialogs/add-relation-dialog.component';
 
 @Component({
   selector: 'app-mis',
@@ -26,6 +28,7 @@ export class MisComponent implements OnInit {
   selectedEntity: IAppEntity;
   selectedEntityFields: IAppEntityField[];
   selectedEntityFieldsFiltered: IAppEntityField[];
+  selectedEntityRelations: IAppEntityRelation[];
   selectedEntitySections: string[];
   selectedEntitySelectedSection: string;
   fieldsDisabled = true;
@@ -112,6 +115,7 @@ export class MisComponent implements OnInit {
     this.parseSections(this.selectedEntity.fields);
     this.selectedEntityFields = this.getSelectedEntityFields();
     this.filterSelectedEntityFields('Todos');
+    this.updateSelectedEntityRelations();
   }
 
   private parseSections(fields: IAppEntityField[]) {
@@ -120,6 +124,10 @@ export class MisComponent implements OnInit {
       if (!this.selectedEntitySections.includes(e.section)) { this.selectedEntitySections.push(e.section); }
     });
     this.selectedEntitySelectedSection = 'Todos';
+  }
+
+  private updateSelectedEntityRelations() {
+    this.selectedEntityRelations = Object.assign([], this.selectedEntity.relations);
   }
 
   private getSelectedEntityFields(section?: string): IAppEntityField[] {
@@ -178,6 +186,7 @@ export class MisComponent implements OnInit {
 
   public clickCancelEditEntity() {
     this.selectedEntityFields = this.getSelectedEntityFields();
+    this.updateSelectedEntityRelations();
     this.parseSections(this.selectedEntityFields);
     this.filterSelectedEntityFields(this.selectedEntitySelectedSection);
     this.fieldsDisabled = true;
@@ -185,6 +194,7 @@ export class MisComponent implements OnInit {
 
   public clickSaveEditEntity() {
     this.selectedEntity.fields = this.selectedEntityFields;
+    this.selectedEntity.relations = this.selectedEntityRelations;
 
     if (this.selectedEntity.fields.length === 0) {
       this.snackService.showSnackBar('Erro! É obrigatório ter pelo menos um campo.', null, 5000);
@@ -251,5 +261,46 @@ export class MisComponent implements OnInit {
     this.selectedEntityFields.splice(i, 1);
     this.setSelectedSection('Todos');
     this.parseSections(this.selectedEntityFields);
+  }
+
+  public clickAddRelation() {
+    const relation: IAppEntityRelation = {
+      id: 0, relatedEntity: this.selectedEntity, description: null
+    };
+
+    const dialogObj: IDialogData<IAppEntityRelation, IAppEntity> = {
+      success: false, responseObject: relation, options: this.appEntities
+    };
+
+    const dialogRef = this.dialog.open(AddRelationDialogComponent, {
+      minWidth: '400px',
+      maxWidth: '800px',
+      maxHeight: '800px',
+      data: dialogObj
+    });
+
+    dialogRef.afterClosed().subscribe((result: IDialogData<IAppEntityRelation, IAppEntity>) => {
+      if (!result.success) { return; }
+      this.selectedEntityRelations.push(result.responseObject);
+    });
+  }
+
+  public clickRemoveRelation(relation: IAppEntityRelation) {
+    const i = this.selectedEntityRelations.indexOf(relation);
+    this.selectedEntityRelations.splice(i, 1);
+  }
+
+  public clickGoToRelation(relation: IAppEntityRelation) {
+    if (!this.fieldsDisabled) {
+      this.snackService.showSnackBar('Não é possível ir para outra entidade. Cancele ou guarde as alterações feitas.', null, 8000);
+      return;
+    }
+
+    const i = this.appEntities.findIndex(x => x.id === relation.relatedEntity.id);
+    if (i < 0) {
+      this.snackService.showSnackBar('Erro! Algo inesperado aconteceu.', null, 5000);
+    } else {
+      this.selectEntity(this.appEntities[i]);
+    }
   }
 }

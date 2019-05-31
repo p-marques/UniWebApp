@@ -29,10 +29,10 @@ namespace UniWebApp.Web
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddCors(options =>
-            {
-            options.AddPolicy("dev", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+            //services.AddCors(options =>
+            //{
+            //options.AddPolicy("dev", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //});
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -47,7 +47,7 @@ namespace UniWebApp.Web
         {
             if (env.IsDevelopment())
             {
-                app.UseCors("dev");
+                //app.UseCors("dev");
             }
             else
             {
@@ -55,10 +55,11 @@ namespace UniWebApp.Web
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseMvc();
 

@@ -12,8 +12,8 @@ import { SnackBarService } from '../shared/snack-bar.service';
 })
 export class MisService {
   static snack;
-  private entityUrl = 'http://localhost:53115/api/entities';
-  private entityTypesUrl = 'http://localhost:53115/api/entities/types';
+  private entityUrl = 'api/entities';
+  private entityTypesUrl = 'api/entities/types';
 
   constructor(snackService: SnackBarService, private http: HttpClient) { MisService.snack = snackService; }
 

@@ -19,6 +19,6 @@ app-home {
   overflow-y: auto;
 }
 
-mat-list.mat-list-base {
+mat-list.mat-list-base, mat-action-list.mat-list-base {
   padding-top: 0;
 }
