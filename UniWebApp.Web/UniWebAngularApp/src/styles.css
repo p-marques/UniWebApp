@@ -22,3 +22,9 @@ app-home {
 mat-list.mat-list-base, mat-action-list.mat-list-base {
   padding-top: 0;
 }
+
+@media (max-width: 599px) {
+  app-root {
+    top: 56px;
+  }
+}

@@ -14,6 +14,9 @@ import { AddEntityDialogComponent } from './dialogs/add-entity-dialog.component'
 import { ConfirmDeleteEntityDialogComponent } from './dialogs/confirm-delete-entity-dialog.component';
 import { IAppEntityRelation } from '../models/IAppEntityRelation';
 import { AddRelationDialogComponent } from './dialogs/add-relation-dialog.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mis',
@@ -33,7 +36,13 @@ export class MisComponent implements OnInit {
   selectedEntitySelectedSection: string;
   fieldsDisabled = true;
 
-  constructor(private misService: MisService, private snackService: SnackBarService, public dialog: MatDialog) { }
+  constructor(private misService: MisService, private snackService: SnackBarService, public dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver) { }
+
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches)
+    );
 
   ngOnInit() {
     this.updateEntitiesList();
@@ -163,7 +172,8 @@ export class MisComponent implements OnInit {
     if (value === 'Todos') { return; }
     const dialogObj: IDialogData<string, string> = { success: false, responseObject: value, options: null };
     const dialogRef = this.dialog.open(UpdateSectionNameDialogComponent, {
-      data: dialogObj
+      data: dialogObj,
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: IDialogData<string, string>) => {
@@ -222,7 +232,8 @@ export class MisComponent implements OnInit {
       success: false, responseObject: field.section, options: this.selectedEntitySections.filter(x => x !== 'Todos')
     };
     const dialogRef = this.dialog.open(MoveFieldToSectionDialogComponent, {
-      data: dialogObj
+      data: dialogObj,
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: IDialogData<string, string>) => {
@@ -244,7 +255,8 @@ export class MisComponent implements OnInit {
 
     const dialogRef = this.dialog.open(AddFieldDialogComponent, {
       minWidth: '400px',
-      data: dialogObj
+      data: dialogObj,
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: IDialogData<IAppEntityField, string>) => {
@@ -274,9 +286,10 @@ export class MisComponent implements OnInit {
 
     const dialogRef = this.dialog.open(AddRelationDialogComponent, {
       minWidth: '400px',
-      maxWidth: '800px',
+      maxWidth: '400px',
       maxHeight: '800px',
-      data: dialogObj
+      data: dialogObj,
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: IDialogData<IAppEntityRelation, IAppEntity>) => {

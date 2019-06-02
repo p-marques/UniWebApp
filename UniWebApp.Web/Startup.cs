@@ -59,8 +59,6 @@ namespace UniWebApp.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            //app.UseAuthentication();
-
             app.UseMvc();
 
             app.UseSpa(spa =>

@@ -5,3 +5,10 @@ mat-toolbar {
   right: 0;
   z-index: 2;
 }
+
+.sidenav mat-nav-list a.active { border-left: 3px solid #3f51b5; }
+
+@media (max-width: 599px) {
+  .sidenav-container { min-height: calc(100% - 56px); }
+  .sidenav { width: 100%; }
+}

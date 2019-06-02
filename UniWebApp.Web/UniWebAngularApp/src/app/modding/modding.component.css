@@ -23,4 +23,25 @@ header {
 
 .mod-description-container .mod-title-container {
   margin-bottom: 10px;
+  max-width: 100%;
+}
+
+@media (max-width: 599px) {
+
+  .mod-container {
+    padding: 10px 0;
+  }
+
+  .mod-description-container {
+    padding: 5px;
+  }
+
+  .mod-description-container .mod-title-container h1 {
+    font-size: 22px;
+  }
+
+  .mod-description-container .youtube {
+    max-width: 100%;
+  }
+
 }

@@ -74,10 +74,6 @@ header {
   font-weight: 500;
 }
 
-.entity-list mat-list-item.entity .fields-container h3 {
-  font-size: 18px;
-}
-
 .selected-entity-container {
   z-index: 1;
   box-shadow: -8px -5px 5px rgba(0, 0, 50, 0.1);
@@ -85,8 +81,8 @@ header {
 }
 
 .select-entity-hint-container {
-  height: 300px;
   color: #aaa;
+  padding-top: 10px;
 }
 
 .selected-entity-container-inner {
@@ -202,4 +198,40 @@ mat-list.sections-list mat-list-item.selected button {
 
 .entity-relations-container mat-list.relations-list mat-list-item p {
   font-size: 14px;
+}
+
+@media (max-width: 599px) {
+
+  header h2 {
+    font-size: 20px;
+  }
+
+  header p {
+    font-size: 14px;
+  }
+
+  .entity-list-container h1.no-entities-h1 {
+    font-size: 16px;
+  }
+
+  .entity-list mat-list-item.entity .type-name {
+    font-size: 12px;
+  }
+
+  .entity-list mat-list-item.entity h3 {
+    font-size: 14px;
+  }
+
+  .select-entity-hint-container h1 {
+    font-size: 16px;
+  }
+
+  .selected-entity-toolbar {
+    height: 64px !important;
+  }
+
+  .entity-fields-container {
+    padding: 0;
+  }
+
 }
